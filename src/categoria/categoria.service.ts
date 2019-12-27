@@ -16,7 +16,6 @@ export class CategoriaService {
         const categoriaResponse = await this.categoriaRepository.find({
             where: [{ "isActive": true }]
         });
-        const categoriaLength = categoriaResponse.length;
 
         let response: Array<CategoriaResponseDto> = [];
 
@@ -31,7 +30,7 @@ export class CategoriaService {
         return response;
     }
 
-    async getCategoria(id: number): Promise<Categoria> {
+    async getCategoria(id: number): Promise<CategoriaResponseDto> {
         let categoria = null;
         try {
             categoria = await this.categoriaRepository.findOne({
@@ -40,7 +39,7 @@ export class CategoriaService {
         } catch (error) {
             throw new InternalServerErrorException('Erro ao buscar dados da Categoria');
         }
-        
+
         return categoria;
     }
 
@@ -50,8 +49,10 @@ export class CategoriaService {
             throw new BadRequestException('Dados nulos para cadastrar nova Categoria.');
         }
 
-        if (!this.getCategoria(categoriaDto.id)) {
-            throw new BadRequestException(`Informçãoes não encontradas na Categoria para o Id ${categoriaDto.id}.`);
+        let categoriaResponse = await this.getCategoria(categoriaDto.id);
+
+        if (categoriaResponse) {
+            throw new BadRequestException(`Já existe informações para o Id informado. Id: ${categoriaDto.id}.`);
         }
 
         let categoria = new Categoria();
@@ -61,7 +62,7 @@ export class CategoriaService {
         try {
             this.categoriaRepository.save(categoria);
         } catch (error) {
-            throw new BadRequestException(`Erro ao gravar categoria. ${error}`);
+            throw new InternalServerErrorException(`Erro ao gravar categoria. ${error}`);
         }
     }
 
@@ -71,7 +72,9 @@ export class CategoriaService {
             throw new BadRequestException('Dados nulos para cadastrar nova Categoria.');
         }
 
-        if (!this.getCategoria(categoriaDto.id)) {
+        let categoriaResponse = await this.getCategoria(categoriaDto.id);
+
+        if (!categoriaResponse) {
             throw new BadRequestException(`Informçãoes não encontradas na Categoria para o Id ${categoriaDto.id}.`);
         }
 
@@ -82,21 +85,29 @@ export class CategoriaService {
         try {
             this.categoriaRepository.save(categoria);
         } catch (error) {
-            throw new BadRequestException(`Erro ao atualizar categoria. ${error}`);
+            throw new InternalServerErrorException(`Erro ao atualizar categoria. ${error}`);
         }
 
         this.categoriaRepository.save(categoria);
     }
 
     async deleteCategoria(id: number) {
-        
-        let categoria = await this.getCategoria(id);
-        if (categoria) {
+
+        if (!id) {
+            throw new BadRequestException('Id nulo para Categoria.');
+        }
+
+        let categoriaResponse = await this.getCategoria(id);
+
+        if (!categoriaResponse) {
             throw new BadRequestException(`Informçãoes não encontradas na Categoria para o Id ${id}.`);
         }
 
+        let categoria = new Categoria();
+        categoria.descricao = categoriaResponse.description;
+        categoria.id = categoriaResponse.id;
+        categoria.isActive = false;
         try {
-            categoria.isActive = false;
             this.categoriaRepository.save(categoria);
         } catch (error) {
             throw new InternalServerErrorException('Erro ao inativar Categoria');

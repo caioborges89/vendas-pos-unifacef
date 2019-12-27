@@ -10,13 +10,10 @@ async function bootstrap() {
     .setTitle('Vendas Pós-Graduação')
     .setDescription('API Vendas trabalho final')
     .setVersion('1.0')
-    //.addTag('vendas-pos-graduacao')
-    //.addBearerAuth()
+    .addTag('vendas-pos-graduacao')
+    .addBearerAuth()
+    .setTitle('Test')
     .build();
-
-  // const categoriaDocument = SwaggerModule.createDocument(app, options, {
-  //   include: [CategoriaModule]
-  // });
 
   const document = SwaggerModule.createDocument(app, options);
 

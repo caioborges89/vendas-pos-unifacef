@@ -11,4 +11,9 @@ export class CategoriaResponseDto{
         description: 'Descrição da categoria'
     })
     description: string;
+
+    @ApiProperty({
+        description: 'Categoria ativa ou inativa na base de dados'
+    })
+    isActive: boolean;
 }

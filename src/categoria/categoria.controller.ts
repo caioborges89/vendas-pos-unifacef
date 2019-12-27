@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode } from '@nestjs/common';
 import { CategoriaService } from './categoria.service';
 import { Categoria } from './categoria.entity';
 import { CategoriaResponseDto } from './categoria.response.dto';
@@ -10,7 +10,7 @@ import { CategoriaRequestDto } from './categoria.request.dto';
 export class CategoriaController {
     constructor(private readonly categoriaService: CategoriaService) { }
 
-    @Get('/findAll')
+    @Get()
     @ApiResponse({
         status: 200,
         description: 'Lista de Categorias',
@@ -21,7 +21,18 @@ export class CategoriaController {
         return this.categoriaService.findAll();
     }
 
-    @Post('/create')
+    @Get(':id')
+    @ApiResponse({
+        status: 200,
+        description: 'Busca Categoria por Id',
+        type: CategoriaResponseDto,
+        isArray: false
+    })
+    getById(@Param('id') id: number): Promise<CategoriaResponseDto> {
+        return this.categoriaService.getCategoria(id);        
+    }
+
+    @Post()
     @ApiResponse({
         status: 200,
         description: 'Categoria criada',
@@ -32,8 +43,14 @@ export class CategoriaController {
         this.categoriaService.create(categoriaRequestDto);
     }
 
+    @Put()
     updateCategoria(@Body() categoriaRequestDto: CategoriaRequestDto) {
         this.categoriaService.updateCategoria(categoriaRequestDto);
+    }
+
+    @Delete(':id')
+    deleteCategoria(@Param('id') id: number) {
+        this.categoriaService.deleteCategoria(id);
     }
 
 }
