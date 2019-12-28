@@ -9,11 +9,14 @@ export class Cliente {
     nome: string;
 
     @Column({ length: 14, unique: true })
-    cpfCnpj: string;
+    cpfcnpj: string;
 
     @Column({ length: 100 })
     email: string;
 
     @Column({ length: 20 })
     senha: string;
+
+    @Column({ default: true })
+    isActive: boolean;
 }
