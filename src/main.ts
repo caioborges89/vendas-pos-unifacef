@@ -6,12 +6,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const options = new DocumentBuilder()
-    .setTitle('Vendas Pós-Graduação')
-    .setDescription('API Vendas trabalho final')
+    .setTitle('API de Vendas')
+    .setDescription('Trabalho de Pós-Graduação da Uni-FACEF')
     .setVersion('1.0')
-    .addTag('vendas-pos-graduacao')
     .addBearerAuth()
-    .setTitle('Test')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);

@@ -1,8 +1,9 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode } from '@nestjs/common';
 import { PedidoService } from './pedido.service';
 import { PedidoRequestDto, PedidoResponseDto } from './pedido.dto';
-import { ApiOkResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOkResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse } from '@nestjs/swagger';
 
+@ApiTags('Pedido')
 @Controller('pedido')
 export class PedidoController {
     constructor(private readonly service: PedidoService) { }
