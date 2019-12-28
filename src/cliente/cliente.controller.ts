@@ -1,6 +1,6 @@
-import { Controller, Get, Param, Query, Post, Body, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Query, Post, Body, Put, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { ClienteService } from './cliente.service';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags, ApiOkResponse, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse, ApiCreatedResponse, ApiNoContentResponse } from '@nestjs/swagger';
 import { Cliente } from './cliente.entity';
 import { ClienteRequestDTO } from './cliente.request.dto';
 
@@ -12,55 +12,96 @@ export class ClienteController {
     ) {}
 
     @Get()
-    @ApiResponse({
-        status:200,
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({
         description: 'Listar Clientes/Usuário',
         type: Cliente,
         isArray:true
+    })
+    @ApiNotFoundResponse({
+        description: 'Não encontrado'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Erro inesperado'
     })
     findAll():Promise<Cliente[]>{
         return this.clienteService.findAll();
     }
 
     @Get(':id')
-    @ApiResponse({
-        status:200,
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({
         description: 'Buscas Cliente/Usuário por ID',
         type: Cliente,
         isArray:false
+    })
+    @ApiNotFoundResponse({
+        description: 'Não encontrado'
+    })
+    @ApiBadRequestResponse({
+        description: 'Requisição inválida'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Erro inesperado'
     })
     findOne(@Param('id') id: number):Promise<Cliente>{
         return this.clienteService.findOne(id);
     }
 
     @Post()
-    @ApiResponse({
-        status:200,
+    @HttpCode(HttpStatus.CREATED)
+    @ApiCreatedResponse({
         description: 'Cadastrar novo Cliente/Usuário',
         type: Cliente,
         isArray:false
+    })
+    @ApiNotFoundResponse({
+        description: 'Não encontrado'
+    })
+    @ApiBadRequestResponse({
+        description: 'Requisição inválida'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Erro inesperado'
     })
     create(@Body() clienteDTO:ClienteRequestDTO) {
         return this.clienteService.create(clienteDTO);
     }
 
     @Put(':id')
-    @ApiResponse({
-        status:200,
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({
         description: 'Alterar cadastro Cliente/Usuário',
         type: Cliente,
         isArray:false
+    })
+    @ApiNotFoundResponse({
+        description: 'Não encontrado'
+    })
+    @ApiBadRequestResponse({
+        description: 'Requisição inválida'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Erro inesperado'
     })
     update(@Param('id') id: number, @Body() clienteDTO:ClienteRequestDTO):Promise<Cliente> {
         return this.clienteService.update(id,clienteDTO);
     }
 
     @Delete(':id')
-    @ApiResponse({
-        status:200,
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiNoContentResponse({
         description: 'Deletar cadastro Cliente/Usuário',
-        type: Cliente,
         isArray:false
+    })
+    @ApiNotFoundResponse({
+        description: 'Não encontrado'
+    })
+    @ApiBadRequestResponse({
+        description: 'Requisição inválida'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Erro inesperado'
     })
     delete(@Param('id') id: number):Promise<Cliente> {
         return this.clienteService.delete(id);
