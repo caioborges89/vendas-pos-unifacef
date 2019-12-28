@@ -62,7 +62,7 @@ export class PedidoService {
                 cliente: {
                     id: cliente.id,
                     nome: cliente.nome,
-                    cpfCnpj: cliente.cpfcnpj
+                    cpfcnpj: cliente.cpfcnpj
                 },
                 produtos: produtosDto
             });

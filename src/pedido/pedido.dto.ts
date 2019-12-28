@@ -8,7 +8,7 @@ interface ProdutoRequestDto {
 interface ClienteResponseDto {
     id: number; // ID do cliente
     nome: string; // Nome do cliente
-    cpfCnpj: string; // CPF ou CNPJ do cliente
+    cpfcnpj: string; // CPF ou CNPJ do cliente
 }
 
 interface ProdutoResponseDto {
@@ -77,7 +77,7 @@ export class PedidoResponseDto {
         example: {
             id: 2020,
             nome: 'João',
-            cpfCnpj: '12345678912'
+            cpfcnpj: '12345678912'
         }
     })
     cliente: ClienteResponseDto;
