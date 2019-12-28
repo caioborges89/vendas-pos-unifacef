@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, OneToMany, ManyToOne } from 'typeorm';
+import { ItemPedido } from './item-pedido.entity';
+import { Cliente } from 'src/cliente/cliente.entity';
 
 @Entity()
 export class Pedido {
@@ -12,5 +14,12 @@ export class Pedido {
     valor: number;
 
     @Column()
-    data: Date;    
+    data: Date;
+    
+    @OneToMany(type => ItemPedido, item => item.pedido)
+    itens: ItemPedido[];
+    
+    @ManyToOne(type => Cliente, cliente => cliente.pedidos)
+    @JoinColumn({name: 'idCliente', referencedColumnName: 'id'})
+    cliente: Cliente;
 }
