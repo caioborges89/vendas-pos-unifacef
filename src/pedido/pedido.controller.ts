@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode } from '@nestjs/common';
+import { Controller, Get, Query, Post, Body, Param, Put, Delete, HttpStatus, HttpCode } from '@nestjs/common';
 import { PedidoService } from './pedido.service';
-import { PedidoRequestDto, PedidoResponseDto } from './pedido.dto';
+import { PedidoRequestDto, PedidoResponseDto, PedidoQueryDto } from './pedido.dto';
 import { ApiTags, ApiOkResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse } from '@nestjs/swagger';
 
 @ApiTags('Pedido')
@@ -21,8 +21,8 @@ export class PedidoController {
     @ApiInternalServerErrorResponse({
         description: 'Erro inesperado'
     })
-    get(): Promise<PedidoResponseDto[]> {
-        return this.service.get();
+    get(@Query() query: PedidoQueryDto): Promise<PedidoResponseDto[]> {
+        return this.service.get(query);
     }
 
     @Get(':id')

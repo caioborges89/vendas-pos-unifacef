@@ -7,6 +7,11 @@ import { ItemPedido } from './item-pedido.entity';
 import { Cliente } from 'src/cliente/cliente.entity';
 import { Produto } from 'src/produto/produto.entity';
 
+interface GetPedidoRequestDto {
+    id?: number;
+    idCliente?: number;
+}
+
 @Injectable()
 export class PedidoService {
     constructor(
@@ -20,8 +25,8 @@ export class PedidoService {
         private readonly produtoRepository: Repository<Produto>,
     ) { }
 
-    async get(id?: number): Promise<PedidoResponseDto[]> {
-        const pedidos = await this.pedidoRepository.find(id && { id: id });
+    async get(request?: GetPedidoRequestDto): Promise<PedidoResponseDto[]> {
+        const pedidos = await this.pedidoRepository.find(request);
         if (pedidos.length === 0) {
             throw new NotFoundException('Nenhum pedido foi encontrado');
         }
@@ -71,7 +76,7 @@ export class PedidoService {
             throw new BadRequestException('O ID do pedido está inválido');
         }
         
-        return (await this.get(id))[0];
+        return (await this.get({ id }))[0];
     }
 
     async create(request: PedidoRequestDto): Promise<PedidoResponseDto> {

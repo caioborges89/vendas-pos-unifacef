@@ -25,6 +25,15 @@ export interface ItemPedidoResponseDto {
     produto: ProdutoResponseDto;
 }
 
+export class PedidoQueryDto {
+    @ApiProperty({
+        description: 'ID do cliente',
+        example: 2020,
+        required: false
+    })
+    idCliente?: number;
+}
+
 export class PedidoRequestDto {
     @ApiProperty({
         description: 'ID do cliente',
