@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { CategoriaModule } from './categoria/categoria.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,8 +16,12 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, options);
 
-  SwaggerModule.setup('api/vendas', app, document);
+  SwaggerModule.setup('', app, document);
 
-  await app.listen(3000);
+  const port: number = 3000;
+
+  await app.listen(port);
+  console.log(`Server running on http://localhost:${port}/`)
 }
+
 bootstrap();

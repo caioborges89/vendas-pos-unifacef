@@ -8,6 +8,9 @@ export class Pedido {
     @Column()
     idCliente: number;    
 
+    @Column({ type: 'decimal', precision: 9, scale: 2, default: 0 })
+    valor: number;
+
     @Column()
-    dataPedido: Date;    
+    data: Date;    
 }

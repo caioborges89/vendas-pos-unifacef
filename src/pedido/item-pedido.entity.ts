@@ -12,8 +12,8 @@ export class ItemPedido {
     idProduto: number;    
 
     @Column()
-    sequencia: number;  
+    quantidade: number;
 
-    @Column()
-    valorProduto: number;  
+    @Column({ type: 'decimal', precision: 7, scale: 2, default: 0 })
+    valor: number;  
 }

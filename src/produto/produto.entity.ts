@@ -9,9 +9,9 @@ export class Produto {
     descricao: string;    
 
     @Column()
-    quantidade: number;
+    quantidade: number; // qtd no estoque
 
-    @Column()
+    @Column({ type: 'decimal', precision: 7, scale: 2, default: 0 })
     valor: number;
 
     @Column()
