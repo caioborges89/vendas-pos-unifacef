@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, OneToMany, ManyToOne } from 'typeorm';
+import { ItemPedido } from './item-pedido.entity';
+import { Cliente } from 'src/cliente/cliente.entity';
 
 @Entity()
 export class Pedido {
@@ -8,6 +10,16 @@ export class Pedido {
     @Column()
     idCliente: number;    
 
+    @Column({ type: 'decimal', precision: 9, scale: 2, default: 0 })
+    valor: number;
+
     @Column()
-    dataPedido: Date;    
+    data: Date;
+    
+    @OneToMany(type => ItemPedido, item => item.pedido)
+    itens: ItemPedido[];
+    
+    @ManyToOne(type => Cliente, cliente => cliente.pedidos)
+    @JoinColumn({name: 'idCliente', referencedColumnName: 'id'})
+    cliente: Cliente;
 }

@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Pedido } from './pedido.entity';
+import { Produto } from 'src/produto/produto.entity';
 
 @Entity()
 export class ItemPedido {
@@ -11,9 +13,17 @@ export class ItemPedido {
     @Column()
     idProduto: number;    
 
-    @Column()
-    sequencia: number;  
+    @Column({ precision: 7, default: 0 })
+    quantidade: number;
 
-    @Column()
-    valorProduto: number;  
+    @Column({ type: 'decimal', precision: 7, scale: 2, default: 0 })
+    valor: number;
+    
+    @ManyToOne(type => Pedido, pedido => pedido.itens)
+    @JoinColumn({name: 'idPedido', referencedColumnName: 'id'})
+    pedido: Pedido;
+    
+    @ManyToOne(type => Produto, produto => produto.pedidos)
+    @JoinColumn({name: 'idProduto', referencedColumnName: 'id'})
+    produto: Produto;
 }
