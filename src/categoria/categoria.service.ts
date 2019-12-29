@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException, HttpException, HttpModule } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Categoria } from './categoria.entity';
@@ -40,6 +40,10 @@ export class CategoriaService {
             throw new InternalServerErrorException('Erro ao buscar dados da Categoria');
         }
 
+        if (!categoria) {
+            throw new NotFoundException(`Informçãoes não encontradas na Categoria para o Id ${id}.`);
+        }
+
         return categoria;
     }
 
@@ -49,11 +53,7 @@ export class CategoriaService {
             throw new BadRequestException('Dados nulos para cadastrar nova Categoria.');
         }
 
-        let categoriaResponse = await this.getCategoria(categoriaDto.id);
-
-        if (categoriaResponse) {
-            throw new BadRequestException(`Já existe informações para o Id informado. Id: ${categoriaDto.id}.`);
-        }
+        await this.getCategoria(categoriaDto.id);
 
         let categoria = new Categoria();
         categoria.descricao = categoriaDto.description;
@@ -72,11 +72,7 @@ export class CategoriaService {
             throw new BadRequestException('Dados nulos para cadastrar nova Categoria.');
         }
 
-        let categoriaResponse = await this.getCategoria(categoriaDto.id);
-
-        if (!categoriaResponse) {
-            throw new BadRequestException(`Informçãoes não encontradas na Categoria para o Id ${categoriaDto.id}.`);
-        }
+        await this.getCategoria(categoriaDto.id);
 
         let categoria = new Categoria();
         categoria.descricao = categoriaDto.description;
@@ -98,10 +94,6 @@ export class CategoriaService {
         }
 
         let categoriaResponse = await this.getCategoria(id);
-
-        if (!categoriaResponse) {
-            throw new BadRequestException(`Informçãoes não encontradas na Categoria para o Id ${id}.`);
-        }
 
         let categoria = new Categoria();
         categoria.descricao = categoriaResponse.description;
