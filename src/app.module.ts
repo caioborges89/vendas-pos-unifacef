@@ -15,10 +15,10 @@ import { AuthenticationModule } from './auth/authentication.module';
   imports: [TypeOrmModule.forRoot({
     type: 'mysql',
     host: 'localhost',
-    port: 3306,
+    port: 3310,
     username: 'root',
-    password: 'admin',
-    database: 'vendas_pos_graduacao',
+    password: 'root',
+    database: 'vendas-pos-graduacao',
     entities: [Categoria, Cliente, Pedido, ItemPedido, Produto],
     synchronize: true,
   }),

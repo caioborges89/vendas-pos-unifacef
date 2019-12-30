@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import * as jwt from 'jsonwebtoken';
 import { AuthenticationRequestDTO } from "./authentication.request.dto";
 import { sign } from "jsonwebtoken";
+import { AuthenticationResponseDTO } from "./authentication.response.dto";
 
 @Injectable()
 export class AuthenticationService{
@@ -13,7 +14,7 @@ export class AuthenticationService{
         private readonly clienteRepository:Repository<Cliente>
     ) {}
 
-    async login(authenticationRequestDTO:AuthenticationRequestDTO):Promise<String>{
+    async login(authenticationRequestDTO:AuthenticationRequestDTO):Promise<AuthenticationResponseDTO>{
         let cliente = await this.clienteRepository.findOne({
             where:[{"email":authenticationRequestDTO.email}]
         })
@@ -29,7 +30,11 @@ export class AuthenticationService{
             email: cliente.email
         });
 
-        return token;
+        let tokenDTO = new AuthenticationResponseDTO();
+
+        tokenDTO.token = token;
+        
+        return tokenDTO;
     }
 
     getToken(payload, options = {}) {
