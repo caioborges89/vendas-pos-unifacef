@@ -14,10 +14,10 @@ import { Produto } from './produto/produto.entity';
   imports: [TypeOrmModule.forRoot({
     type: 'mysql',
     host: 'localhost',
-    port: 3310,
+    port: 3306,
     username: 'root',
-    password: 'root',
-    database: 'vendas-pos-graduacao',
+    password: 'admin',
+    database: 'vendas_pos_graduacao',
     entities: [Categoria, Cliente, Pedido, ItemPedido, Produto],
     synchronize: true,
   }),

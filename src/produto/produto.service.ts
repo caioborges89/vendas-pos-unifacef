@@ -31,7 +31,7 @@ export class ProdutoService {
             produtoResponseDto.quantity = x.quantidade;
             produtoResponseDto.cost = x.valor;
             let categoria = new Categoria();
-            produtoResponseDto.category = categoria;
+            //produtoResponseDto.category = categoria;
             produtoResponseDto.id = x.id;
             response.push(produtoResponseDto);
         });
@@ -41,6 +41,8 @@ export class ProdutoService {
 
     async getProduto(id: number): Promise<ProdutoResponseDto> {
         let produto = null;
+        let produtoDto = new  ProdutoResponseDto();
+        
         try {
             produto = await this.produtoRepository.findOne({
                 where: [{ "id": id }]
@@ -48,8 +50,16 @@ export class ProdutoService {
         } catch (error) {
             throw new InternalServerErrorException('Erro ao buscar dados do Produto');
         }
-
-        return produto;
+        
+        let categoriaDTO = new CategoriaResponseDto();
+        categoriaDTO =  await this.categoriaService.getCategoria(produto.idCategoria);
+        produtoDto.description = produto.descricao;
+        produtoDto.quantity = produto.quantidade;
+        produtoDto.cost = produto.valor;
+        produtoDto.category = categoriaDTO;
+        produtoDto.id = produto.id;
+    
+        return produtoDto;
     }
 
     async create(produtoDto: ProdutoRequestDto) {
@@ -135,7 +145,6 @@ export class ProdutoService {
 
         let produto = new Produto();
         produto.descricao = produtoResponse.description;
-        //produto.idCategoria = produtoResponse.category;
         produto.quantidade = produtoResponse.quantity;
         produto.valor = produtoResponse.cost;
         produto.id = produtoResponse.id;
