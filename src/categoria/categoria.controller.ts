@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode, Res, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode, Res, HttpException, UseInterceptors } from '@nestjs/common';
 import { CategoriaService } from './categoria.service';
 import { CategoriaResponseDto } from './categoria.response.dto';
 import { ApiTags, ApiNoContentResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { CategoriaRequestDto } from './categoria.request.dto';
+import { LoggingInterceptor } from 'src/auth/logging.interceptor';
 
 @ApiTags('Categoria')
 @Controller('categoria')
+@UseInterceptors(LoggingInterceptor)
 export class CategoriaController {
     constructor(private readonly categoriaService: CategoriaService) { }
 

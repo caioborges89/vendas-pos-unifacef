@@ -1,12 +1,14 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode, UseInterceptors } from '@nestjs/common';
 import { ProdutoService } from './produto.service';
 import { ProdutoResponseDto } from './produto.response.dto';
 import { ProdutoRequestDto } from './produto.request.dto';
 import { ApiNoContentResponse, ApiOkResponse, ApiResponse, ApiTags, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 import { BadRequestException } from '@nestjs/common';
+import { LoggingInterceptor } from 'src/auth/logging.interceptor';
 
 @ApiTags('Produto')
 @Controller('produto')
+@UseInterceptors(LoggingInterceptor)
 export class ProdutoController {
         constructor(private readonly produtoService: ProdutoService) { }
     
