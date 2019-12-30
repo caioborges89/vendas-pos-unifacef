@@ -4,6 +4,9 @@ import { Repository } from 'typeorm';
 import { Produto } from './produto.entity';
 import { ProdutoResponseDto } from './produto.response.dto'
 import { ProdutoRequestDto } from './produto.request.dto';
+import { Categoria } from 'src/categoria/categoria.entity';
+import { CategoriaService } from 'src/categoria/categoria.service';
+import { CategoriaResponseDto } from 'src/categoria/categoria.response.dto';
 
 
 @Injectable()
@@ -11,6 +14,7 @@ export class ProdutoService {
     constructor(
         @InjectRepository(Produto)
         private readonly produtoRepository: Repository<Produto>,
+        private readonly categoriaService: CategoriaService
     ) { }
 
     async findAll(): Promise<ProdutoResponseDto[]> {
@@ -26,7 +30,8 @@ export class ProdutoService {
             produtoResponseDto.description = x.descricao;
             produtoResponseDto.quantity = x.quantidade;
             produtoResponseDto.cost = x.valor;
-            produtoResponseDto.category = x.idCategoria;
+            let categoria = new Categoria();
+            produtoResponseDto.category = categoria;
             produtoResponseDto.id = x.id;
             response.push(produtoResponseDto);
         });
@@ -130,7 +135,7 @@ export class ProdutoService {
 
         let produto = new Produto();
         produto.descricao = produtoResponse.description;
-        produto.idCategoria = produtoResponse.category;
+        //produto.idCategoria = produtoResponse.category;
         produto.quantidade = produtoResponse.quantity;
         produto.valor = produtoResponse.cost;
         produto.id = produtoResponse.id;
