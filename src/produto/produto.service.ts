@@ -21,21 +21,24 @@ export class ProdutoService {
         const produtoResponse = await this.produtoRepository.find({
             where: [{ "isActive": true }]
         });
-
+        
         let response: Array<ProdutoResponseDto> = [];
 
-        produtoResponse.forEach(x => {
+        for (var x in produtoResponse){
             let produtoResponseDto: ProdutoResponseDto;
+            let categoriaDTO = await this.categoriaService.getCategoria(produtoResponse[x].idCategoria);
             produtoResponseDto = new ProdutoResponseDto;
-            produtoResponseDto.description = x.descricao;
-            produtoResponseDto.quantity = x.quantidade;
-            produtoResponseDto.cost = x.valor;
-            let categoria = new Categoria();
-            //produtoResponseDto.category = categoria;
-            produtoResponseDto.id = x.id;
+            produtoResponseDto.description = produtoResponse[x].descricao;
+            produtoResponseDto.quantity = produtoResponse[x].quantidade;
+            produtoResponseDto.cost = produtoResponse[x].valor;
+            produtoResponseDto.category = categoriaDTO;
+            produtoResponseDto.id = produtoResponse[x].id;
             response.push(produtoResponseDto);
-        });
 
+        }      
+        //await produtoResponse.forEach(async x => {
+            
+        //});
         return response;
     }
 
