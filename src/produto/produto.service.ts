@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Produto } from './produto.entity';
 import { ProdutoResponseDto } from './produto.response.dto'
+import { ProdutoRequestDto } from './produto.request.dto';
 
 
 @Injectable()
@@ -50,6 +51,103 @@ export class ProdutoService {
         produtoResponseDto.category = produto.idCategoria;
         produtoResponseDto.id = produto.id;
         return produtoResponseDto;
+    }
+
+    async create(produtoDto: ProdutoRequestDto) {
+
+        if (!produtoDto) {
+            throw new BadRequestException('Dados nulos para cadastrar nova Categoria.');
+        }
+
+        let produtoResponse = await this.getProduto(produtoDto.id);
+
+        if (produtoResponse) {
+            throw new BadRequestException(`Já existe informações para o Id informado. Id: ${produtoDto.id}.`);
+        }
+
+        let produto = new Produto();
+        produto.descricao = produtoDto.description;
+        produto.idCategoria = produtoDto.category;
+        produto.quantidade = produtoDto.quantity
+        produto.valor = produtoDto.cost;
+        produto.id = produtoDto.id;
+        
+        if (produto.quantidade < 0){
+            throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoDto.quantity}`);
+        }
+
+        if (produto.valor <= 0){
+            throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoDto.cost}`);
+        }
+
+        try {
+            this.produtoRepository.save(produto);
+        } catch (error) {
+            throw new InternalServerErrorException(`Erro ao gravar produto. ${error}`);
+        }
+    }
+
+    async updateProduto(produtoDto: ProdutoRequestDto) {
+
+        if (!produtoDto) {
+            throw new BadRequestException('Dados nulos para atualizar produto.');
+        }
+
+        let produtoResponse = await this.getProduto(produtoDto.id);
+
+        if (!produtoResponse) {
+            throw new BadRequestException(`Produto não encontrado para o Id ${produtoDto.id}.`);
+        }
+
+        let produto = new Produto();
+        produto.descricao = produtoDto.description;
+        produto.idCategoria = produtoDto.category;
+        produto.quantidade = produtoDto.quantity
+        produto.valor = produtoDto.cost;
+        produto.id = produtoDto.id;
+        
+        if (produto.quantidade < 0){
+            throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoDto.quantity}`);
+        }
+
+        if (produto.valor <= 0){
+            throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoDto.cost}`);
+        }
+        try {
+            this.produtoRepository.save(produto);
+        } catch (error) {
+            throw new InternalServerErrorException(`Erro ao atualizar produto. ${error}`);
+        }
+
+        this.produtoRepository.save(produto);
+    }
+
+    async deleteProduto(id: number) {
+
+        if (!id) {
+            throw new BadRequestException('Id nulo para Produto.');
+        }
+
+        let produtoResponse = await this.getProduto(id);
+
+        if (!produtoResponse) {
+            throw new BadRequestException(`Informções não encontradas para o Produt: Id ${id}.`);
+        }
+
+        let produto = new Produto();
+        produto.descricao = produtoResponse.description;
+        produto.idCategoria = produtoResponse.category;
+        produto.quantidade = produtoResponse.quantity;
+        produto.valor = produtoResponse.cost;
+        produto.id = produtoResponse.id;
+        produto.isActive = false;
+                
+        try {
+            this.produtoRepository.save(produto);
+        } catch (error) {
+            throw new InternalServerErrorException('Erro ao inativar produto');
+        }
+
     }
 
 }

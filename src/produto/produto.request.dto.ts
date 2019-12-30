@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class CategoriaRequestDto{
+export class ProdutoRequestDto{
     @ApiProperty({
         description: 'ID do produto'
     })
@@ -25,4 +25,5 @@ export class CategoriaRequestDto{
         description: 'Categoria do produto'
     })
     category: number;
+    
 }

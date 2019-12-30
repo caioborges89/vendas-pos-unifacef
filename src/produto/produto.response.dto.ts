@@ -26,4 +26,9 @@ export class ProdutoResponseDto{
         description: 'Categoria do produto'
     })
     category: number;
+
+    @ApiProperty({
+        description: 'Produto ativa ou inativo na base de dados'
+    })
+    isActive: boolean;
 }
