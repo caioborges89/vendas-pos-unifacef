@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode } from '@nestjs/common';
 import { ProdutoService } from './produto.service';
-import { Produto } from './produto.entity';
 import { ProdutoResponseDto } from './produto.response.dto';
 import { ProdutoRequestDto } from './produto.request.dto';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiNoContentResponse, ApiOkResponse, ApiResponse, ApiTags, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse } from '@nestjs/swagger';
+import { BadRequestException } from '@nestjs/common';
 
 @ApiTags('Produto')
 @Controller('produto')
@@ -17,6 +17,12 @@ export class ProdutoController {
             type: ProdutoResponseDto,
             isArray: true
         })
+        @ApiNotFoundResponse({
+            description: 'Produtos não encontrados'
+        })
+        @ApiInternalServerErrorResponse({
+            description: 'Erro inesperado'
+        })
         findAll(): Promise<ProdutoResponseDto[]> {
             return this.produtoService.findAll();
         }
@@ -27,6 +33,15 @@ export class ProdutoController {
             description: 'Busca produto por Id',
             type: ProdutoResponseDto,
             isArray: false
+        })        
+        @ApiNotFoundResponse({
+            description: 'Não encontrado'
+        })
+        @ApiBadRequestResponse({
+            description: 'Requisição inválida'
+        })
+        @ApiInternalServerErrorResponse({
+            description: 'Erro inesperado'
         })
         getById(@Param('id') id: number): Promise<ProdutoResponseDto> {
             return this.produtoService.getProduto(id);        
@@ -38,16 +53,68 @@ export class ProdutoController {
             type: ProdutoResponseDto,
             isArray: true
         })
+        @ApiNotFoundResponse({
+            description: 'Não encontrado'
+        })
+        @ApiBadRequestResponse({
+            description: 'Requisição inválida'
+        })
+        @ApiInternalServerErrorResponse({
+            description: 'Erro inesperado'
+        })
         createCategoria(@Body() produtoRequestDto: ProdutoRequestDto) {
+            if (produtoRequestDto.quantity < 0){
+                throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoRequestDto.quantity}`);
+            }
+    
+            if (produtoRequestDto.cost <= 0){
+                throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoRequestDto.cost}`);
+            }
             this.produtoService.create(produtoRequestDto);
         }
 
         @Put()
+        @HttpCode(HttpStatus.OK)
+        @ApiOkResponse({
+            description: 'Atualizar pedido',
+            type: ProdutoResponseDto,
+            isArray: false
+        })
+        @ApiNotFoundResponse({
+            description: 'Não encontrado'
+        })
+        @ApiBadRequestResponse({
+            description: 'Requisição inválida'
+        })
+        @ApiInternalServerErrorResponse({
+            description: 'Erro inesperado'
+        })
         updateCategoria(@Body() produtoequestDto: ProdutoRequestDto) {
+            if (produtoequestDto.quantity < 0){
+                throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoequestDto.quantity}`);
+            }
+    
+            if (produtoequestDto.cost <= 0){
+                throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoequestDto.cost}`);
+            }
             this.produtoService.updateProduto(produtoequestDto);
         }
 
         @Delete(':id')
+        @HttpCode(HttpStatus.NO_CONTENT)
+        @ApiNoContentResponse({
+            description: 'Deletar pedido',
+            isArray: false
+        })
+        @ApiNotFoundResponse({
+            description: 'Não encontrado'
+        })
+        @ApiBadRequestResponse({
+            description: 'Requisição inválida'
+        })
+        @ApiInternalServerErrorResponse({
+            description: 'Erro inesperado'
+        })
         deleteCategoria(@Param('id') id: number) {
             this.produtoService.deleteProduto(id);
         }

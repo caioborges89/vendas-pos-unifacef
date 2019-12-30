@@ -51,14 +51,16 @@ export class ProdutoService {
             throw new InternalServerErrorException('Erro ao buscar dados do Produto');
         }
         
-        let categoriaDTO = new CategoriaResponseDto();
-        categoriaDTO =  await this.categoriaService.getCategoria(produto.idCategoria);
-        produtoDto.description = produto.descricao;
-        produtoDto.quantity = produto.quantidade;
-        produtoDto.cost = produto.valor;
-        produtoDto.category = categoriaDTO;
-        produtoDto.id = produto.id;
-    
+        if ( produto ){
+            let categoriaDTO = new CategoriaResponseDto();
+            categoriaDTO =  await this.categoriaService.getCategoria(produto.idCategoria);
+            produtoDto.description = produto.descricao;
+            produtoDto.quantity = produto.quantidade;
+            produtoDto.cost = produto.valor;
+            produtoDto.category = categoriaDTO;
+            produtoDto.id = produto.id;
+        }
+        
         return produtoDto;
     }
 
@@ -67,10 +69,11 @@ export class ProdutoService {
         if (!produtoDto) {
             throw new BadRequestException('Dados nulos para cadastrar novo Produto.');
         }
-
+       
         let produtoResponse = await this.getProduto(produtoDto.id);
-
+        console.log(produtoResponse);
         if (produtoResponse) {
+            console.log("entrou no if");
             throw new BadRequestException(`Já existe informações para o Id informado. Id: ${produtoDto.id}.`);
         }
 
@@ -81,14 +84,6 @@ export class ProdutoService {
         produto.valor = produtoDto.cost;
         produto.id = produtoDto.id;
         
-        if (produtoDto.quantity < 0){
-            throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoDto.quantity}`);
-        }
-
-        if (produtoDto.cost <= 0){
-            throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoDto.cost}`);
-        }
-
         try {
             this.produtoRepository.save(produto);
         } catch (error) {
@@ -115,13 +110,6 @@ export class ProdutoService {
         produto.valor = produtoDto.cost;
         produto.id = produtoDto.id;
         
-        if (produto.quantidade < 0){
-            throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoDto.quantity}`);
-        }
-
-        if (produto.valor <= 0){
-            throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoDto.cost}`);
-        }
         try {
             this.produtoRepository.save(produto);
         } catch (error) {
