@@ -1,56 +1,109 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode, Res, HttpException } from '@nestjs/common';
 import { CategoriaService } from './categoria.service';
-import { Categoria } from './categoria.entity';
 import { CategoriaResponseDto } from './categoria.response.dto';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiNoContentResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { CategoriaRequestDto } from './categoria.request.dto';
 
-
+@ApiTags('Categoria')
 @Controller('categoria')
 export class CategoriaController {
     constructor(private readonly categoriaService: CategoriaService) { }
 
     @Get()
-    @ApiResponse({
+    @ApiCreatedResponse({
         status: 200,
         description: 'Lista de Categorias',
         type: CategoriaResponseDto,
         isArray: true
     })
+    @ApiNotFoundResponse({
+        description: 'Não encontrado'
+    })
+    @ApiBadRequestResponse({
+        description: 'Requisição inválida'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Erro inesperado'
+    })
     findAll(): Promise<CategoriaResponseDto[]> {
-        return this.categoriaService.findAll();
+        return this.categoriaService.findAll();        
     }
 
     @Get(':id')
-    @ApiResponse({
-        status: 200,
-        description: 'Busca Categoria por Id',
+    @ApiCreatedResponse({
+        description: 'Busca categoria por Id',
         type: CategoriaResponseDto,
-        isArray: false
+        isArray: true
+    })
+    @ApiNotFoundResponse({
+        description: 'Não encontrado'
+    })
+    @ApiBadRequestResponse({
+        description: 'Requisição inválida'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Erro inesperado'
     })
     getById(@Param('id') id: number): Promise<CategoriaResponseDto> {
         return this.categoriaService.getCategoria(id);        
     }
 
     @Post()
-    @ApiResponse({
-        status: 200,
-        description: 'Categoria criada',
+    @HttpCode(HttpStatus.CREATED)
+    @ApiCreatedResponse({
+        description: 'Adicionar categoria',
         type: CategoriaResponseDto,
         isArray: true
+    })
+    @ApiNotFoundResponse({
+        description: 'Não encontrado'
+    })
+    @ApiBadRequestResponse({
+        description: 'Requisição inválida'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Erro inesperado'
     })
     createCategoria(@Body() categoriaRequestDto: CategoriaRequestDto) {
         this.categoriaService.create(categoriaRequestDto);
     }
 
     @Put()
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({
+        description: 'Atualizar pedido',        
+        isArray: false
+    })
+    @ApiNotFoundResponse({
+        description: 'Não encontrado'
+    })
+    @ApiBadRequestResponse({
+        description: 'Requisição inválida'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Erro inesperado'
+    })
     updateCategoria(@Body() categoriaRequestDto: CategoriaRequestDto) {
         this.categoriaService.updateCategoria(categoriaRequestDto);
     }
 
     @Delete(':id')
-    deleteCategoria(@Param('id') id: number) {
-        this.categoriaService.deleteCategoria(id);
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiNoContentResponse({
+        description: 'Deletar categoria',
+        isArray: false
+    })
+    @ApiNotFoundResponse({
+        description: 'Não encontrado'
+    })
+    @ApiBadRequestResponse({
+        description: 'Requisição inválida'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Erro inesperado'
+    })
+    deleteCategoria(@Param('id') id: number) {        
+         this.categoriaService.deleteCategoria(id);
     }
 
 }

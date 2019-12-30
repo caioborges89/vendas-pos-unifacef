@@ -3,8 +3,9 @@ import { ProdutoService } from './produto.service';
 import { Produto } from './produto.entity';
 import { ProdutoResponseDto } from './produto.response.dto';
 import { ProdutoRequestDto } from './produto.request.dto';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Produto')
 @Controller('produto')
 export class ProdutoController {
         constructor(private readonly produtoService: ProdutoService) { }

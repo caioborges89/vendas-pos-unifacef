@@ -9,8 +9,6 @@ import { Cliente } from './cliente/cliente.entity';
 import { Pedido } from './pedido/pedido.entity';
 import { ItemPedido } from './pedido/item-pedido.entity';
 import { Produto } from './produto/produto.entity';
-import { CategoriaController } from './categoria/categoria.controller';
-import { CategoriaService } from './categoria/categoria.service';
 
 @Module({
   imports: [TypeOrmModule.forRoot({

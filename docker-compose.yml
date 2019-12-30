@@ -12,4 +12,3 @@ services:
       MYSQL_DATABASE: vendas-pos-graduacao
     ports:
       - "3310:3306"
-    restart: always
