@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { Produto } from './produto.entity';
 import { ProdutoResponseDto } from './produto.response.dto'
 import { ProdutoRequestDto } from './produto.request.dto';
-import { Categoria } from 'src/categoria/categoria.entity';
 import { CategoriaService } from 'src/categoria/categoria.service';
 import { CategoriaResponseDto } from 'src/categoria/categoria.response.dto';
 
@@ -36,9 +35,7 @@ export class ProdutoService {
             response.push(produtoResponseDto);
 
         }      
-        //await produtoResponse.forEach(async x => {
-            
-        //});
+        
         return response;
     }
 
