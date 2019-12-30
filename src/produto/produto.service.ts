@@ -41,22 +41,16 @@ export class ProdutoService {
                 where: [{ "id": id }]
             });
         } catch (error) {
-            throw new InternalServerErrorException('Erro ao buscar dados do produto');
+            throw new InternalServerErrorException('Erro ao buscar dados do Produto');
         }
-        
-        var produtoResponseDto = new ProdutoResponseDto;
-        produtoResponseDto.description = produto.descricao;
-        produtoResponseDto.quantity = produto.quantidade;
-        produtoResponseDto.cost = produto.valor;
-        produtoResponseDto.category = produto.idCategoria;
-        produtoResponseDto.id = produto.id;
-        return produtoResponseDto;
+
+        return produto;
     }
 
     async create(produtoDto: ProdutoRequestDto) {
 
         if (!produtoDto) {
-            throw new BadRequestException('Dados nulos para cadastrar nova Categoria.');
+            throw new BadRequestException('Dados nulos para cadastrar novo Produto.');
         }
 
         let produtoResponse = await this.getProduto(produtoDto.id);
@@ -72,11 +66,11 @@ export class ProdutoService {
         produto.valor = produtoDto.cost;
         produto.id = produtoDto.id;
         
-        if (produto.quantidade < 0){
+        if (produtoDto.quantity < 0){
             throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoDto.quantity}`);
         }
 
-        if (produto.valor <= 0){
+        if (produtoDto.cost <= 0){
             throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoDto.cost}`);
         }
 

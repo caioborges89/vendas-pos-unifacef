@@ -33,12 +33,12 @@ export class ProdutoController {
         @Post()
         @ApiResponse({
             status: 200,
-            description: 'Produto criada',
+            description: 'Produto criado',
             type: ProdutoResponseDto,
             isArray: true
         })
-        createCategoria(@Body() produtoequestDto: ProdutoRequestDto) {
-            this.produtoService.create(produtoequestDto);
+        createCategoria(@Body() produtoRequestDto: ProdutoRequestDto) {
+            this.produtoService.create(produtoRequestDto);
         }
 
         @Put()
