@@ -2,11 +2,11 @@ import { Controller, Get, Query, Post, Body, Param, Put, Delete, HttpStatus, Htt
 import { PedidoService } from './pedido.service';
 import { PedidoRequestDto, PedidoResponseDto, PedidoQueryDto } from './pedido.dto';
 import { ApiTags, ApiOkResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse } from '@nestjs/swagger';
-import { LoggingInterceptor } from 'src/auth/logging.interceptor';
+import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
 
 @ApiTags('Pedido')
 @Controller('pedido')
-@UseInterceptors(LoggingInterceptor)
+@UseInterceptors(AuthenticationInterceptor)
 export class PedidoController {
     constructor(private readonly service: PedidoService) { }
 

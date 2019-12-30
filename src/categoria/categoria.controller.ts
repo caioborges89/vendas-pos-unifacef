@@ -3,11 +3,11 @@ import { CategoriaService } from './categoria.service';
 import { CategoriaResponseDto } from './categoria.response.dto';
 import { ApiTags, ApiNoContentResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { CategoriaRequestDto } from './categoria.request.dto';
-import { LoggingInterceptor } from 'src/auth/logging.interceptor';
+import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
 
 @ApiTags('Categoria')
 @Controller('categoria')
-@UseInterceptors(LoggingInterceptor)
+@UseInterceptors(AuthenticationInterceptor)
 export class CategoriaController {
     constructor(private readonly categoriaService: CategoriaService) { }
 

@@ -3,7 +3,7 @@ import { Observable } from "rxjs";
 import * as jwt from 'jsonwebtoken';
 
 @Injectable()
-export class LoggingInterceptor implements NestInterceptor {
+export class AuthenticationInterceptor implements NestInterceptor {
     
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         const request = context.switchToHttp().getRequest();

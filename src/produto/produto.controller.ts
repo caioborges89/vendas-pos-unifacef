@@ -4,11 +4,11 @@ import { ProdutoResponseDto } from './produto.response.dto';
 import { ProdutoRequestDto } from './produto.request.dto';
 import { ApiNoContentResponse, ApiOkResponse, ApiResponse, ApiTags, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 import { BadRequestException } from '@nestjs/common';
-import { LoggingInterceptor } from 'src/auth/logging.interceptor';
+import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
 
 @ApiTags('Produto')
 @Controller('produto')
-@UseInterceptors(LoggingInterceptor)
+@UseInterceptors(AuthenticationInterceptor)
 export class ProdutoController {
         constructor(private readonly produtoService: ProdutoService) { }
     

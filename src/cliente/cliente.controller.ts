@@ -3,7 +3,7 @@ import { ClienteService } from './cliente.service';
 import { ApiResponse, ApiTags, ApiOkResponse, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse, ApiCreatedResponse, ApiNoContentResponse } from '@nestjs/swagger';
 import { Cliente } from './cliente.entity';
 import { ClienteRequestDTO } from './cliente.request.dto';
-import { LoggingInterceptor } from 'src/auth/logging.interceptor';
+import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
 
 @ApiTags('Cliente')
 @Controller('cliente')
@@ -12,7 +12,7 @@ export class ClienteController {
         private readonly clienteService: ClienteService
     ) {}
 
-    @UseInterceptors(LoggingInterceptor)
+    @UseInterceptors(AuthenticationInterceptor)
     @Get()
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({
@@ -30,7 +30,7 @@ export class ClienteController {
         return this.clienteService.findAll();
     }
 
-    @UseInterceptors(LoggingInterceptor)
+    @UseInterceptors(AuthenticationInterceptor)
     @Get(':id')
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({
@@ -71,7 +71,7 @@ export class ClienteController {
         return this.clienteService.create(clienteDTO);
     }
 
-    @UseInterceptors(LoggingInterceptor)
+    @UseInterceptors(AuthenticationInterceptor)
     @Put(':id')
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({
@@ -91,7 +91,7 @@ export class ClienteController {
     update(@Param('id') id: number, @Body() clienteDTO:ClienteRequestDTO):Promise<Cliente> {
         return this.clienteService.update(id,clienteDTO);
     }
-    @UseInterceptors(LoggingInterceptor)
+    @UseInterceptors(AuthenticationInterceptor)
     @Delete(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
     @ApiNoContentResponse({
