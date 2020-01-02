@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cliente } from './cliente.entity';
 import { Repository } from 'typeorm';
@@ -12,13 +12,21 @@ export class ClienteService {
     ) { }
 
     async findAll(): Promise<Cliente[]>{
-        return await this.clienteRepository.find({
+        const clientes = await this.clienteRepository.find({
             where: [{"isActive":true}]
         })
+        if (!clientes || clientes.length == 0) {
+            throw new NotFoundException("Clientes não encontrados!");
+        }
+        return clientes;
     }
 
     async findOne(id: number): Promise<Cliente>{
-        return await this.clienteRepository.findOne(id);
+        const cliente = await this.clienteRepository.findOne(id);
+        if (!cliente) {
+            throw new NotFoundException("Cliente não encontrado!");
+        }
+        return cliente;
     }
 
     async create(clienteDTO:ClienteRequestDTO): Promise<Cliente>{

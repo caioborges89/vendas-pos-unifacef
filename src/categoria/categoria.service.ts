@@ -9,11 +9,11 @@ import { CategoriaRequestDto } from './categoria.request.dto';
 export class CategoriaService {
     constructor(
         @InjectRepository(Categoria)
-        private readonly categoriaRepository: Repository<Categoria>,
+        private readonly repository: Repository<Categoria>,
     ) { }
 
     async findAll(): Promise<CategoriaResponseDto[]> {
-        const categoriaResponse = await this.categoriaRepository.find({
+        const categoriaResponse = await this.repository.find({
             where: [{ "isActive": true }]
         });
 
@@ -22,7 +22,7 @@ export class CategoriaService {
         categoriaResponse.forEach(x => {
             let categoriaResponseDto: CategoriaResponseDto;
             categoriaResponseDto = new CategoriaResponseDto;
-            categoriaResponseDto.description = x.descricao;
+            categoriaResponseDto.descricao = x.descricao;
             categoriaResponseDto.id = x.id;
             response.push(categoriaResponseDto);
         });
@@ -30,10 +30,10 @@ export class CategoriaService {
         return response;
     }
 
-    async getCategoria(id: number): Promise<CategoriaResponseDto> {
+    async getById(id: number): Promise<CategoriaResponseDto> {
         let categoria = null;
         try {
-            categoria = await this.categoriaRepository.findOne({
+            categoria = await this.repository.findOne({
                 where: [{ "id": id }]
             });
         } catch (error) {
@@ -41,66 +41,55 @@ export class CategoriaService {
         }
 
         if (!categoria) {
-            throw new NotFoundException(`Informçãoes não encontradas na Categoria para o Id ${id}.`);
+            throw new NotFoundException(`Categoria ${id} não encontrada.`);
         }
 
         return categoria;
     }
 
-    async create(categoriaDto: CategoriaRequestDto) {
-
-        if (!categoriaDto) {
+    async create(request: CategoriaRequestDto): Promise<CategoriaResponseDto> {
+        if (!request) {
             throw new BadRequestException('Dados nulos para cadastrar nova Categoria.');
         }
 
-        await this.getCategoria(categoriaDto.id);
-
         let categoria = new Categoria();
-        categoria.descricao = categoriaDto.description;
-        categoria.id = categoriaDto.id;
+        categoria.descricao = request.descricao;
 
         try {
-            this.categoriaRepository.save(categoria);
+            await this.repository.save(categoria);
+            return await this.getById(categoria.id);
         } catch (error) {
             throw new InternalServerErrorException(`Erro ao gravar categoria. ${error}`);
         }
     }
 
-    async updateCategoria(categoriaDto: CategoriaRequestDto) {
-
-        if (!categoriaDto) {
+    async update(id: number, request: CategoriaRequestDto): Promise<CategoriaResponseDto> {
+        if (!request) {
             throw new BadRequestException('Dados nulos para cadastrar nova Categoria.');
         }
 
-        await this.getCategoria(categoriaDto.id);
-
-        let categoria = new Categoria();
-        categoria.descricao = categoriaDto.description;
-        categoria.id = categoriaDto.id;
+        const categoria = await this.getById(id);
+        categoria.descricao = request.descricao;
 
         try {
-            this.categoriaRepository.save(categoria);
+            await this.repository.save(categoria);
+            return await this.getById(categoria.id);
         } catch (error) {
             throw new InternalServerErrorException(`Erro ao atualizar categoria. ${error}`);
         }
-
-        this.categoriaRepository.save(categoria);
     }
 
-    async deleteCategoria(id: number) {
+    async destroy(id: number): Promise<void> {
 
         if (!id) {
             throw new BadRequestException('Id nulo para Categoria.');
         }
 
-        let categoriaResponse = await this.getCategoria(id);
-
-        let categoria = new Categoria();
-        categoria.descricao = categoriaResponse.description;
-        categoria.id = categoriaResponse.id;
+        const categoria = await this.getById(id);
         categoria.isActive = false;
+
         try {
-            this.categoriaRepository.save(categoria);
+            await this.repository.save(categoria);
         } catch (error) {
             throw new InternalServerErrorException('Erro ao inativar Categoria');
         }

@@ -1,7 +1,5 @@
-import { ApiProperty, ApiResponseProperty } from "@nestjs/swagger";
-import { Categoria } from "src/categoria/categoria.entity";
+import { ApiProperty } from "@nestjs/swagger";
 import { CategoriaResponseDto } from "src/categoria/categoria.response.dto";
-
 
 export class ProdutoResponseDto{
     @ApiProperty({

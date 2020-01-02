@@ -26,7 +26,7 @@ export class ProdutoService {
 
         for (var x in produtoResponse) {
             let produtoResponseDto: ProdutoResponseDto;
-            let categoriaDTO = await this.categoriaService.getCategoria(produtoResponse[x].idCategoria);
+            let categoriaDTO = await this.categoriaService.getById(produtoResponse[x].idCategoria);
             produtoResponseDto = new ProdutoResponseDto;
             produtoResponseDto.description = produtoResponse[x].descricao;
             produtoResponseDto.quantity = produtoResponse[x].quantidade;
@@ -54,7 +54,7 @@ export class ProdutoService {
         
         if ( produto ) {
             let categoriaDTO = new CategoriaResponseDto();
-            categoriaDTO =  await this.categoriaService.getCategoria(produto.idCategoria);
+            categoriaDTO = await this.categoriaService.getById(produto.idCategoria);
             produtoDto.description = produto.descricao;
             produtoDto.quantity = produto.quantidade;
             produtoDto.cost = produto.valor;
@@ -78,7 +78,6 @@ export class ProdutoService {
             }
         }
        
-
         let produto = new Produto();
         produto.descricao = produtoDto.description;
         produto.idCategoria = produtoDto.category;
@@ -94,9 +93,16 @@ export class ProdutoService {
     }
 
     async updateProduto(produtoDto: ProdutoRequestDto, id: number) : Promise<Produto> {
-
         if (!produtoDto) {
             throw new BadRequestException('Dados nulos para atualizar produto.');
+        }
+
+        if (produtoDto.quantity < 0) {
+            throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoDto.quantity}`);
+        }
+
+        if (produtoDto.cost <= 0) {
+            throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoDto.cost}`);
         }
 
         let produtoResponse = await this.produtoRepository.findOne(id);

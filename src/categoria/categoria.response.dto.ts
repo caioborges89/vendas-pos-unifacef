@@ -10,7 +10,7 @@ export class CategoriaResponseDto{
     @ApiProperty({
         description: 'Descrição da categoria'
     })
-    description: string;
+    descricao: string;
 
     @ApiProperty({
         description: 'Categoria ativa ou inativa na base de dados'

@@ -12,7 +12,7 @@ export class AuthenticationController {
     ) {}
 
     @Post('/login')
-    @HttpCode(HttpStatus.OK)
+    @HttpCode(HttpStatus.CREATED)
     @ApiCreatedResponse({
         description: 'Login',
         type: AuthenticationResponseDTO,

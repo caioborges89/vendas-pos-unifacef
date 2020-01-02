@@ -6,7 +6,7 @@ import * as jwt from 'jsonwebtoken';
 export class AuthenticationInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         if (context && context.switchToHttp() && context.switchToHttp().getRequest() && context.switchToHttp().getRequest().header('Authorization')) {
-            let token = context.switchToHttp().getRequest().header('Authorization');
+            const token = context.switchToHttp().getRequest().header('Authorization').replace('Bearer ', '');
             if (!jwt.verify(token, 'stubJWT', function(err, decoded) {
                 if (err) {
                     return false;

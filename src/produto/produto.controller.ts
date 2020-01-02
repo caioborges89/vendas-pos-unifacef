@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode, 
 import { ProdutoService } from './produto.service';
 import { ProdutoResponseDto } from './produto.response.dto';
 import { ProdutoRequestDto } from './produto.request.dto';
-import { ApiNoContentResponse, ApiOkResponse, ApiResponse, ApiTags, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse, ApiHeader } from '@nestjs/swagger';
+import { ApiNoContentResponse, ApiOkResponse, ApiTags, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse, ApiCreatedResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { BadRequestException } from '@nestjs/common';
 import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
 import { Produto } from './produto.entity';
@@ -10,22 +10,19 @@ import { Produto } from './produto.entity';
 @ApiTags('Produto')
 @Controller('produto')
 @UseInterceptors(AuthenticationInterceptor)
+@ApiBearerAuth()
 export class ProdutoController {
         constructor(private readonly produtoService: ProdutoService) { }
     
         @Get()
-        @ApiResponse({
-            status: 200,
+        @HttpCode(HttpStatus.OK)
+        @ApiOkResponse({
             description: 'Lista de Produtos',
             type: ProdutoResponseDto,
             isArray: true
         })
-        @ApiHeader({
-            name: 'Authorization',
-            description: 'Auth token',
-          })
         @ApiNotFoundResponse({
-            description: 'Produtos não encontrados'
+            description: 'Não encontrado'
         })
         @ApiInternalServerErrorResponse({
             description: 'Erro inesperado'
@@ -35,16 +32,12 @@ export class ProdutoController {
         }
     
         @Get(':id')
-        @ApiResponse({
-            status: 200,
-            description: 'Busca produto por Id',
+        @HttpCode(HttpStatus.OK)
+        @ApiOkResponse({
+            description: 'Detalhes do produto por ID',
             type: ProdutoResponseDto,
             isArray: false
-        })      
-        @ApiHeader({
-            name: 'Authorization',
-            description: 'Auth token',
-          })  
+        }) 
         @ApiNotFoundResponse({
             description: 'Não encontrado'
         })
@@ -57,17 +50,14 @@ export class ProdutoController {
         getById(@Param('id') id: number): Promise<ProdutoResponseDto> {
             return this.produtoService.getProduto(id);        
         }
+
         @Post()
-        @ApiResponse({
-            status: 201,
+        @HttpCode(HttpStatus.CREATED)
+        @ApiCreatedResponse({
             description: 'Produto criado',
             type: Produto,
-            isArray: true
+            isArray: false
         })
-        @ApiHeader({
-            name: 'Authorization',
-            description: 'Auth token',
-          })
         @ApiNotFoundResponse({
             description: 'Não encontrado'
         })
@@ -77,7 +67,7 @@ export class ProdutoController {
         @ApiInternalServerErrorResponse({
             description: 'Erro inesperado'
         })
-        createCategoria(@Body() produtoRequestDto: ProdutoRequestDto) {
+        create(@Body() produtoRequestDto: ProdutoRequestDto) {
             if (produtoRequestDto.quantity < 0) {
                 throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoRequestDto.quantity}`);
             }
@@ -91,14 +81,10 @@ export class ProdutoController {
         @Put(':id')
         @HttpCode(HttpStatus.OK)
         @ApiOkResponse({
-            description: 'Atualizar pedido',
+            description: 'Produto atualizado',
             type: ProdutoResponseDto,
             isArray: false
         })
-        @ApiHeader({
-            name: 'Authorization',
-            description: 'Auth token',
-          })
         @ApiNotFoundResponse({
             description: 'Não encontrado'
         })
@@ -108,27 +94,16 @@ export class ProdutoController {
         @ApiInternalServerErrorResponse({
             description: 'Erro inesperado'
         })
-        updateCategoria(@Body() produtoequestDto: ProdutoRequestDto, @Param('id') id: number) {
-            if (produtoequestDto.quantity < 0) {
-                throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoequestDto.quantity}`);
-            }
-    
-            if (produtoequestDto.cost <= 0) {
-                throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoequestDto.cost}`);
-            }
+        update(@Body() produtoequestDto: ProdutoRequestDto, @Param('id') id: number) {
             return this.produtoService.updateProduto(produtoequestDto, id);
         }
 
         @Delete(':id')
         @HttpCode(HttpStatus.NO_CONTENT)
         @ApiNoContentResponse({
-            description: 'Deletar pedido',
+            description: 'Produto excluído',
             isArray: false
         })
-        @ApiHeader({
-            name: 'Authorization',
-            description: 'Auth token',
-          })
         @ApiNotFoundResponse({
             description: 'Não encontrado'
         })
@@ -138,7 +113,7 @@ export class ProdutoController {
         @ApiInternalServerErrorResponse({
             description: 'Erro inesperado'
         })
-        deleteCategoria(@Param('id') id: number) {
-            this.produtoService.deleteProduto(id);
+        destroy(@Param('id') id: number): Promise<void> {
+            return this.produtoService.deleteProduto(id);
         }
 }

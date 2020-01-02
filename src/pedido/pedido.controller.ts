@@ -1,12 +1,13 @@
 import { Controller, Get, Query, Post, Body, Param, Put, Delete, HttpStatus, HttpCode, UseInterceptors } from '@nestjs/common';
 import { PedidoService } from './pedido.service';
 import { PedidoRequestDto, PedidoResponseDto, PedidoQueryDto } from './pedido.dto';
-import { ApiTags, ApiOkResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiHeader } from '@nestjs/swagger';
+import { ApiTags, ApiOkResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
 
 @ApiTags('Pedido')
 @Controller('pedido')
 @UseInterceptors(AuthenticationInterceptor)
+@ApiBearerAuth()
 export class PedidoController {
     constructor(private readonly service: PedidoService) { }
 
@@ -17,10 +18,6 @@ export class PedidoController {
         type: PedidoResponseDto,
         isArray: true
     })
-    @ApiHeader({
-        name: 'Authorization',
-        description: 'Auth token',
-      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })
@@ -34,14 +31,10 @@ export class PedidoController {
     @Get(':id')
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({
-        description: 'Detalhes do pedido',
+        description: 'Detalhes do pedido por ID',
         type: PedidoResponseDto,
         isArray: false
     })
-    @ApiHeader({
-        name: 'Authorization',
-        description: 'Auth token',
-      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })
@@ -62,10 +55,6 @@ export class PedidoController {
         type: PedidoResponseDto,
         isArray: false
     })
-    @ApiHeader({
-        name: 'Authorization',
-        description: 'Auth token',
-      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })
@@ -86,10 +75,6 @@ export class PedidoController {
         type: PedidoResponseDto,
         isArray: false
     })
-    @ApiHeader({
-        name: 'Authorization',
-        description: 'Auth token',
-      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })
@@ -109,10 +94,6 @@ export class PedidoController {
         description: 'Pedido excluído',
         isArray: false
     })
-    @ApiHeader({
-        name: 'Authorization',
-        description: 'Auth token',
-      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })

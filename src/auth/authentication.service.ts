@@ -38,6 +38,6 @@ export class AuthenticationService{
     }
 
     getToken(payload, options = {}) {
-        return jwt.sign(payload, 'stubJWT', { expiresIn: '1m', ...options });
+        return jwt.sign(payload, 'stubJWT', { expiresIn: '30m', ...options });
      }
 }
