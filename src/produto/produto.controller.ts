@@ -5,6 +5,7 @@ import { ProdutoRequestDto } from './produto.request.dto';
 import { ApiNoContentResponse, ApiOkResponse, ApiResponse, ApiTags, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 import { BadRequestException } from '@nestjs/common';
 import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
+import { Produto } from './produto.entity';
 
 @ApiTags('Produto')
 @Controller('produto')
@@ -50,9 +51,9 @@ export class ProdutoController {
         }
         @Post()
         @ApiResponse({
-            status: 200,
+            status: 201,
             description: 'Produto criado',
-            type: ProdutoResponseDto,
+            type: Produto,
             isArray: true
         })
         @ApiNotFoundResponse({
@@ -72,10 +73,10 @@ export class ProdutoController {
             if (produtoRequestDto.cost <= 0){
                 throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoRequestDto.cost}`);
             }
-            this.produtoService.create(produtoRequestDto);
+            return this.produtoService.create(produtoRequestDto);
         }
 
-        @Put()
+        @Put(':id')
         @HttpCode(HttpStatus.OK)
         @ApiOkResponse({
             description: 'Atualizar pedido',
@@ -91,7 +92,7 @@ export class ProdutoController {
         @ApiInternalServerErrorResponse({
             description: 'Erro inesperado'
         })
-        updateCategoria(@Body() produtoequestDto: ProdutoRequestDto) {
+        updateCategoria(@Body() produtoequestDto: ProdutoRequestDto, @Param('id') id: number) {
             if (produtoequestDto.quantity < 0){
                 throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoequestDto.quantity}`);
             }
@@ -99,7 +100,7 @@ export class ProdutoController {
             if (produtoequestDto.cost <= 0){
                 throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoequestDto.cost}`);
             }
-            this.produtoService.updateProduto(produtoequestDto);
+            return this.produtoService.updateProduto(produtoequestDto, id);
         }
 
         @Delete(':id')

@@ -6,6 +6,7 @@ import { ProdutoResponseDto } from './produto.response.dto'
 import { ProdutoRequestDto } from './produto.request.dto';
 import { CategoriaService } from 'src/categoria/categoria.service';
 import { CategoriaResponseDto } from 'src/categoria/categoria.response.dto';
+import { Categoria } from 'src/categoria/categoria.entity';
 
 
 @Injectable()
@@ -64,7 +65,7 @@ export class ProdutoService {
         return produtoDto;
     }
 
-    async create(produtoDto: ProdutoRequestDto) {
+    async create(produtoDto: ProdutoRequestDto) : Promise<Produto>{
         
         if (!produtoDto) {
             throw new BadRequestException('Dados nulos para cadastrar novo Produto.');
@@ -86,38 +87,35 @@ export class ProdutoService {
         produto.id = produtoDto.id;
         
         try {
-            this.produtoRepository.save(produto);
+            return await this.produtoRepository.save(produto);
         } catch (error) {
             throw new InternalServerErrorException(`Erro ao gravar produto. ${error}`);
         }
     }
 
-    async updateProduto(produtoDto: ProdutoRequestDto) {
+    async updateProduto(produtoDto: ProdutoRequestDto, id: number) : Promise<Produto> {
 
         if (!produtoDto) {
             throw new BadRequestException('Dados nulos para atualizar produto.');
         }
 
-        let produtoResponse = await this.getProduto(produtoDto.id);
+        let produtoResponse = await this.produtoRepository.findOne(id);
 
         if (!produtoResponse) {
             throw new BadRequestException(`Produto não encontrado para o Id ${produtoDto.id}.`);
         }
 
         let produto = new Produto();
-        produto.descricao = produtoDto.description;
-        produto.idCategoria = produtoDto.category;
-        produto.quantidade = produtoDto.quantity
-        produto.valor = produtoDto.cost;
-        produto.id = produtoDto.id;
+        produtoResponse.descricao = produtoDto.description;
+        produtoResponse.idCategoria = produtoDto.category;
+        produtoResponse.quantidade = produtoDto.quantity
+        produtoResponse.valor = produtoDto.cost;
         
         try {
-            this.produtoRepository.save(produto);
+            return await this.produtoRepository.save(produtoResponse);
         } catch (error) {
             throw new InternalServerErrorException(`Erro ao atualizar produto. ${error}`);
         }
-
-        this.produtoRepository.save(produto);
     }
 
     async deleteProduto(id: number) {
