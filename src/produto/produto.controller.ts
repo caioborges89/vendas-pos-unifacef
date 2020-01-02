@@ -78,11 +78,11 @@ export class ProdutoController {
             description: 'Erro inesperado'
         })
         createCategoria(@Body() produtoRequestDto: ProdutoRequestDto) {
-            if (produtoRequestDto.quantity < 0){
+            if (produtoRequestDto.quantity < 0) {
                 throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoRequestDto.quantity}`);
             }
     
-            if (produtoRequestDto.cost <= 0){
+            if (produtoRequestDto.cost <= 0) {
                 throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoRequestDto.cost}`);
             }
             return this.produtoService.create(produtoRequestDto);
@@ -109,11 +109,11 @@ export class ProdutoController {
             description: 'Erro inesperado'
         })
         updateCategoria(@Body() produtoequestDto: ProdutoRequestDto, @Param('id') id: number) {
-            if (produtoequestDto.quantity < 0){
+            if (produtoequestDto.quantity < 0) {
                 throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoequestDto.quantity}`);
             }
     
-            if (produtoequestDto.cost <= 0){
+            if (produtoequestDto.cost <= 0) {
                 throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoequestDto.cost}`);
             }
             return this.produtoService.updateProduto(produtoequestDto, id);

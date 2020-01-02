@@ -24,7 +24,7 @@ export class ProdutoService {
         
         let response: Array<ProdutoResponseDto> = [];
 
-        for (var x in produtoResponse){
+        for (var x in produtoResponse) {
             let produtoResponseDto: ProdutoResponseDto;
             let categoriaDTO = await this.categoriaService.getCategoria(produtoResponse[x].idCategoria);
             produtoResponseDto = new ProdutoResponseDto;
@@ -52,7 +52,7 @@ export class ProdutoService {
             throw new InternalServerErrorException('Erro ao buscar dados do Produto');
         }
         
-        if ( produto ){
+        if ( produto ) {
             let categoriaDTO = new CategoriaResponseDto();
             categoriaDTO =  await this.categoriaService.getCategoria(produto.idCategoria);
             produtoDto.description = produto.descricao;
@@ -71,7 +71,7 @@ export class ProdutoService {
             throw new BadRequestException('Dados nulos para cadastrar novo Produto.');
         }
        
-        if (produtoDto.id > 0 ){
+        if (produtoDto.id > 0 ) {
             let produtoResponse = await this.getProduto(produtoDto.id);
             if (produtoResponse) {
                 throw new BadRequestException(`Já existe informações para o Id informado. Id: ${produtoDto.id}.`);

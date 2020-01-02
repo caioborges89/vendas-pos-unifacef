@@ -9,7 +9,7 @@ import { AuthenticationResponseDTO } from "./authentication.response.dto";
 export class AuthenticationController {
     constructor(
         private readonly authenticationService: AuthenticationService
-    ){}
+    ) {}
 
     @Post('/login')
     @HttpCode(HttpStatus.OK)

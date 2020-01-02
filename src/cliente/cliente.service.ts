@@ -29,14 +29,14 @@ export class ClienteService {
             where: [{"cpfcnpj":clienteDTO.cpfcnpj}]
         });
         
-        if(cliente)
+        if (cliente)
             throw new BadRequestException('CpfCnpj incluso em outro cadastro de Cliente/Usuario.');
 
         cliente = await this.clienteRepository.findOne({
             where: [{"email":clienteDTO.email}]
         });
 
-        if(cliente)
+        if (cliente)
             throw new BadRequestException('E-Mail incluso em outro cadastro de Cliente/Usuario.');
        
         try {
@@ -46,7 +46,8 @@ export class ClienteService {
             cliente.email = clienteDTO.email;
             cliente.senha = clienteDTO.senha;
         
-            return await this.clienteRepository.save(cliente);
+            await this.clienteRepository.save(cliente);
+            return cliente; // retornar com o id
         } catch (error) {
             throw new InternalServerErrorException(`Erro ao gravar Cliente/Usuario. ${error}`);
         }
@@ -60,14 +61,14 @@ export class ClienteService {
             where: [{"cpfcnpj":clienteDTO.cpfcnpj}]
         });
         
-        if(cliente) {
-            if(cliente.id != id)
+        if (cliente) {
+            if (cliente.id != id)
                 throw new BadRequestException('CpfCnpj incluso em outro cadastro de Cliente/Usuario.');
-            else if(cliente.email != clienteDTO.email){
+            else if (cliente.email != clienteDTO.email) {
                 cliente = await this.clienteRepository.findOne({
                     where: [{"email":clienteDTO.email}]
                 });
-                if(cliente)
+                if (cliente)
                     throw new BadRequestException('E-Mail incluso em outro cadastro de Cliente/Usuario.');
                 else 
                     cliente = await this.clienteRepository.findOne(id);
@@ -75,7 +76,7 @@ export class ClienteService {
         } else 
             cliente = await this.clienteRepository.findOne(id);
 
-        if(!cliente)
+        if (!cliente)
             throw new BadRequestException('Cadastrado Cliente/Usuario não localizado.');
 
         try {
@@ -93,7 +94,7 @@ export class ClienteService {
     async delete(id:number):Promise<Cliente>{
         let cliente = await this.clienteRepository.findOne(id);
 
-        if(!cliente)
+        if (!cliente)
             throw new BadRequestException('Cadastrado Cliente/Usuario não localizado.');
 
         try {

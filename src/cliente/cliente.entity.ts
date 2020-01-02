@@ -5,7 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 @Entity()
 export class Cliente {
     @ApiProperty({
-        description: 'ID da cliente'
+        description: 'ID do cliente'
     })
     @PrimaryGeneratedColumn()
     id: number;
@@ -40,9 +40,6 @@ export class Cliente {
     @Column({ default: true })
     isActive: boolean;
     
-    @ApiProperty({
-        description: 'Pedidos'
-    })
     @OneToMany(type => Pedido, pedido => pedido.cliente)
     pedidos: Pedido[];
 }

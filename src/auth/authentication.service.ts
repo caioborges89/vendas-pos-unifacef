@@ -19,10 +19,10 @@ export class AuthenticationService{
             where:[{"email":authenticationRequestDTO.email}]
         })
 
-        if(!cliente)
+        if (!cliente)
             throw new BadRequestException('E-Mail não localizado');
 
-        if(cliente.senha != authenticationRequestDTO.senha)
+        if (cliente.senha != authenticationRequestDTO.senha)
             throw new BadRequestException('E-Mail ou Senha inválido');
 
         const token = this.getToken({
