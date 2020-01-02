@@ -1,12 +1,13 @@
 import { Controller, Get, Param, Query, Post, Body, Put, Delete, HttpCode, HttpStatus, UseInterceptors } from '@nestjs/common';
 import { ClienteService } from './cliente.service';
-import { ApiResponse, ApiTags, ApiOkResponse, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse, ApiCreatedResponse, ApiNoContentResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiTags, ApiOkResponse, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse, ApiCreatedResponse, ApiNoContentResponse, ApiHeader } from '@nestjs/swagger';
 import { Cliente } from './cliente.entity';
 import { ClienteRequestDTO } from './cliente.request.dto';
 import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
 
 @ApiTags('Cliente')
 @Controller('cliente')
+
 export class ClienteController {
     constructor(
         private readonly clienteService: ClienteService
@@ -18,8 +19,13 @@ export class ClienteController {
     @ApiOkResponse({
         description: 'Listar Clientes/Usuário',
         type: Cliente,
-        isArray:true
+        isArray:true,
+
     })
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'Auth token',
+      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })
@@ -38,6 +44,10 @@ export class ClienteController {
         type: Cliente,
         isArray:false
     })
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'Auth token',
+      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })
@@ -79,6 +89,10 @@ export class ClienteController {
         type: Cliente,
         isArray:false
     })
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'Auth token',
+      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })
@@ -91,6 +105,7 @@ export class ClienteController {
     update(@Param('id') id: number, @Body() clienteDTO:ClienteRequestDTO):Promise<Cliente> {
         return this.clienteService.update(id,clienteDTO);
     }
+
     @UseInterceptors(AuthenticationInterceptor)
     @Delete(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
@@ -98,6 +113,10 @@ export class ClienteController {
         description: 'Deletar cadastro Cliente/Usuário',
         isArray:false
     })
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'Auth token',
+      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })

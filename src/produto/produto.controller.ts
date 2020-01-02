@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode, 
 import { ProdutoService } from './produto.service';
 import { ProdutoResponseDto } from './produto.response.dto';
 import { ProdutoRequestDto } from './produto.request.dto';
-import { ApiNoContentResponse, ApiOkResponse, ApiResponse, ApiTags, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse } from '@nestjs/swagger';
+import { ApiNoContentResponse, ApiOkResponse, ApiResponse, ApiTags, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse, ApiHeader } from '@nestjs/swagger';
 import { BadRequestException } from '@nestjs/common';
 import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
 import { Produto } from './produto.entity';
@@ -20,6 +20,10 @@ export class ProdutoController {
             type: ProdutoResponseDto,
             isArray: true
         })
+        @ApiHeader({
+            name: 'Authorization',
+            description: 'Auth token',
+          })
         @ApiNotFoundResponse({
             description: 'Produtos não encontrados'
         })
@@ -36,7 +40,11 @@ export class ProdutoController {
             description: 'Busca produto por Id',
             type: ProdutoResponseDto,
             isArray: false
-        })        
+        })      
+        @ApiHeader({
+            name: 'Authorization',
+            description: 'Auth token',
+          })  
         @ApiNotFoundResponse({
             description: 'Não encontrado'
         })
@@ -56,6 +64,10 @@ export class ProdutoController {
             type: Produto,
             isArray: true
         })
+        @ApiHeader({
+            name: 'Authorization',
+            description: 'Auth token',
+          })
         @ApiNotFoundResponse({
             description: 'Não encontrado'
         })
@@ -83,6 +95,10 @@ export class ProdutoController {
             type: ProdutoResponseDto,
             isArray: false
         })
+        @ApiHeader({
+            name: 'Authorization',
+            description: 'Auth token',
+          })
         @ApiNotFoundResponse({
             description: 'Não encontrado'
         })
@@ -109,6 +125,10 @@ export class ProdutoController {
             description: 'Deletar pedido',
             isArray: false
         })
+        @ApiHeader({
+            name: 'Authorization',
+            description: 'Auth token',
+          })
         @ApiNotFoundResponse({
             description: 'Não encontrado'
         })

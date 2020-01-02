@@ -1,7 +1,7 @@
 import { Controller, Get, Query, Post, Body, Param, Put, Delete, HttpStatus, HttpCode, UseInterceptors } from '@nestjs/common';
 import { PedidoService } from './pedido.service';
 import { PedidoRequestDto, PedidoResponseDto, PedidoQueryDto } from './pedido.dto';
-import { ApiTags, ApiOkResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOkResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiHeader } from '@nestjs/swagger';
 import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
 
 @ApiTags('Pedido')
@@ -17,6 +17,10 @@ export class PedidoController {
         type: PedidoResponseDto,
         isArray: true
     })
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'Auth token',
+      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })
@@ -34,6 +38,10 @@ export class PedidoController {
         type: PedidoResponseDto,
         isArray: false
     })
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'Auth token',
+      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })
@@ -54,6 +62,10 @@ export class PedidoController {
         type: PedidoResponseDto,
         isArray: false
     })
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'Auth token',
+      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })
@@ -74,6 +86,10 @@ export class PedidoController {
         type: PedidoResponseDto,
         isArray: false
     })
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'Auth token',
+      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })
@@ -93,6 +109,10 @@ export class PedidoController {
         description: 'Pedido excluído',
         isArray: false
     })
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'Auth token',
+      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })

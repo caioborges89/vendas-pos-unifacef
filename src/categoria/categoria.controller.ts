@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode, Res, HttpException, UseInterceptors } from '@nestjs/common';
 import { CategoriaService } from './categoria.service';
 import { CategoriaResponseDto } from './categoria.response.dto';
-import { ApiTags, ApiNoContentResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiTags, ApiNoContentResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiCreatedResponse, ApiOkResponse, ApiHeader } from '@nestjs/swagger';
 import { CategoriaRequestDto } from './categoria.request.dto';
 import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
 
@@ -12,6 +12,10 @@ export class CategoriaController {
     constructor(private readonly categoriaService: CategoriaService) { }
 
     @Get()
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'Auth token',
+      })
     @ApiCreatedResponse({
         status: 200,
         description: 'Lista de Categorias',
@@ -32,6 +36,10 @@ export class CategoriaController {
     }
 
     @Get(':id')
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'Auth token',
+      })
     @ApiCreatedResponse({
         description: 'Busca categoria por Id',
         type: CategoriaResponseDto,
@@ -52,6 +60,10 @@ export class CategoriaController {
 
     @Post()
     @HttpCode(HttpStatus.CREATED)
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'Auth token',
+      })
     @ApiCreatedResponse({
         description: 'Adicionar categoria',
         type: CategoriaResponseDto,
@@ -76,6 +88,10 @@ export class CategoriaController {
         description: 'Atualizar pedido',        
         isArray: false
     })
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'Auth token',
+      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })
@@ -95,6 +111,10 @@ export class CategoriaController {
         description: 'Deletar categoria',
         isArray: false
     })
+    @ApiHeader({
+        name: 'Authorization',
+        description: 'Auth token',
+      })
     @ApiNotFoundResponse({
         description: 'Não encontrado'
     })
