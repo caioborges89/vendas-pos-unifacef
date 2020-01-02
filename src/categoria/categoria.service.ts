@@ -13,17 +13,22 @@ export class CategoriaService {
     ) { }
 
     async findAll(): Promise<CategoriaResponseDto[]> {
-        const categoriaResponse = await this.repository.find({
+        const categorias = await this.repository.find({
             where: [{ "isActive": true }]
         });
 
+        if (!categorias || categorias.length == 0) {
+            throw new NotFoundException('Categorias não encontradas.');
+        }
+
         let response: Array<CategoriaResponseDto> = [];
 
-        categoriaResponse.forEach(x => {
+        categorias.forEach(x => {
             let categoriaResponseDto: CategoriaResponseDto;
             categoriaResponseDto = new CategoriaResponseDto;
-            categoriaResponseDto.descricao = x.descricao;
             categoriaResponseDto.id = x.id;
+            categoriaResponseDto.descricao = x.descricao;
+            categoriaResponseDto.isActive = x.isActive;
             response.push(categoriaResponseDto);
         });
 
@@ -40,7 +45,7 @@ export class CategoriaService {
             throw new InternalServerErrorException('Erro ao buscar dados da Categoria');
         }
 
-        if (!categoria) {
+        if (!categoria || !categoria.isActive) {
             throw new NotFoundException(`Categoria ${id} não encontrada.`);
         }
 

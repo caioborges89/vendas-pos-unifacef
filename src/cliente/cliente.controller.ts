@@ -9,7 +9,7 @@ import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
 @Controller('cliente')
 export class ClienteController {
     constructor(
-        private readonly clienteService: ClienteService
+        private readonly service: ClienteService
     ) {}
 
     @ApiBearerAuth()
@@ -29,7 +29,7 @@ export class ClienteController {
         description: 'Erro inesperado'
     })
     findAll(): Promise<Cliente[]>{
-        return this.clienteService.findAll();
+        return this.service.findAll();
     }
 
     @ApiBearerAuth()
@@ -51,7 +51,7 @@ export class ClienteController {
         description: 'Erro inesperado'
     })
     findOne(@Param('id') id: number):Promise<Cliente>{
-        return this.clienteService.findOne(id);
+        return this.service.findOne(id);
     }
 
     @Post()
@@ -71,7 +71,7 @@ export class ClienteController {
         description: 'Erro inesperado'
     })
     create(@Body() clienteDTO:ClienteRequestDTO) {
-        return this.clienteService.create(clienteDTO);
+        return this.service.create(clienteDTO);
     }
 
     @ApiBearerAuth()
@@ -93,7 +93,7 @@ export class ClienteController {
         description: 'Erro inesperado'
     })
     update(@Param('id') id: number, @Body() clienteDTO:ClienteRequestDTO):Promise<Cliente> {
-        return this.clienteService.update(id,clienteDTO);
+        return this.service.update(id, clienteDTO);
     }
 
     @ApiBearerAuth()
@@ -113,7 +113,7 @@ export class ClienteController {
     @ApiInternalServerErrorResponse({
         description: 'Erro inesperado'
     })
-    delete(@Param('id') id: number):Promise<Cliente> {
-        return this.clienteService.delete(id);
+    destroy(@Param('id') id: number): Promise<void> {
+        return this.service.destroy(id);
     }
 }

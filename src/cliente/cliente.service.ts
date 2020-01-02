@@ -23,7 +23,7 @@ export class ClienteService {
 
     async findOne(id: number): Promise<Cliente>{
         const cliente = await this.clienteRepository.findOne(id);
-        if (!cliente) {
+        if (!cliente || !cliente.isActive) {
             throw new NotFoundException("Cliente não encontrado!");
         }
         return cliente;
@@ -31,7 +31,7 @@ export class ClienteService {
 
     async create(clienteDTO:ClienteRequestDTO): Promise<Cliente>{
         if (!clienteDTO)
-            throw new BadRequestException('Dados nulos para cadastrar novo Cliente/Usuario.');
+            throw new BadRequestException('Dados nulos.');
         
         let cliente = await this.clienteRepository.findOne({
             where: [{"cpfcnpj":clienteDTO.cpfcnpj}]
@@ -63,7 +63,7 @@ export class ClienteService {
 
     async update(id:number, clienteDTO:ClienteRequestDTO):Promise<Cliente>{
         if (!clienteDTO)
-            throw new BadRequestException('Dados nulos para cadastrar novo Cliente/Usuario.');
+            throw new BadRequestException('Dados nulos.');
                 
         let cliente = await this.clienteRepository.findOne({
             where: [{"cpfcnpj":clienteDTO.cpfcnpj}]
@@ -84,8 +84,8 @@ export class ClienteService {
         } else 
             cliente = await this.clienteRepository.findOne(id);
 
-        if (!cliente)
-            throw new BadRequestException('Cadastrado Cliente/Usuario não localizado.');
+        if (!cliente || !cliente.isActive)
+            throw new NotFoundException('Cliente/Usuario não encontrado.');
 
         try {
             cliente.nome = clienteDTO.nome;
@@ -95,22 +95,17 @@ export class ClienteService {
         
             return await this.clienteRepository.save(cliente);
         } catch (error) {
-            throw new InternalServerErrorException(`Erro ao gravar Cliente/Usuario. ${error}`);
+            throw new InternalServerErrorException(`Erro ao atualizar Cliente/Usuario. ${error}`);
         }
     }
 
-    async delete(id:number):Promise<Cliente>{
-        let cliente = await this.clienteRepository.findOne(id);
-
-        if (!cliente)
-            throw new BadRequestException('Cadastrado Cliente/Usuario não localizado.');
-
+    async destroy(id: number): Promise<void> {
+        const cliente = await this.findOne(id);
         try {
             cliente.isActive = false;
-            
-            return await this.clienteRepository.save(cliente);
+            await this.clienteRepository.save(cliente);
         } catch (error) {
-            throw new InternalServerErrorException(`Erro ao gravar Cliente/Usuario. ${error}`);
+            throw new InternalServerErrorException(`Erro ao deletar Cliente/Usuario. ${error}`);
         }
     }
 }

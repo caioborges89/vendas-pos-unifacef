@@ -10,22 +10,22 @@ export class ProdutoResponseDto{
     @ApiProperty({
         description: 'Descrição do produto'
     })
-    description: string;
+    descricao: string;
 
     @ApiProperty({
         description: 'Quantidade do produto em estoque'
     })
-    quantity: number;
+    quantidade: number;
 
     @ApiProperty({
         description: 'Preço do produto'
     })
-    cost: number;
+    valor: number;
 
     @ApiProperty({
         description: 'Categoria do produto'
     })
-    category: CategoriaResponseDto;
+    categoria: CategoriaResponseDto;
 
     @ApiProperty({
         description: 'Produto ativa ou inativo na base de dados'

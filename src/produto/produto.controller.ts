@@ -12,12 +12,12 @@ import { Produto } from './produto.entity';
 @UseInterceptors(AuthenticationInterceptor)
 @ApiBearerAuth()
 export class ProdutoController {
-        constructor(private readonly produtoService: ProdutoService) { }
+        constructor(private readonly service: ProdutoService) { }
     
         @Get()
         @HttpCode(HttpStatus.OK)
         @ApiOkResponse({
-            description: 'Lista de Produtos',
+            description: 'Lista de produtos',
             type: ProdutoResponseDto,
             isArray: true
         })
@@ -28,7 +28,7 @@ export class ProdutoController {
             description: 'Erro inesperado'
         })
         findAll(): Promise<ProdutoResponseDto[]> {
-            return this.produtoService.findAll();
+            return this.service.findAll();
         }
     
         @Get(':id')
@@ -48,14 +48,14 @@ export class ProdutoController {
             description: 'Erro inesperado'
         })
         getById(@Param('id') id: number): Promise<ProdutoResponseDto> {
-            return this.produtoService.getProduto(id);        
+            return this.service.getById(id);        
         }
 
         @Post()
         @HttpCode(HttpStatus.CREATED)
         @ApiCreatedResponse({
-            description: 'Produto criado',
-            type: Produto,
+            description: 'Produto adicionado',
+            type: ProdutoResponseDto,
             isArray: false
         })
         @ApiNotFoundResponse({
@@ -67,15 +67,8 @@ export class ProdutoController {
         @ApiInternalServerErrorResponse({
             description: 'Erro inesperado'
         })
-        create(@Body() produtoRequestDto: ProdutoRequestDto) {
-            if (produtoRequestDto.quantity < 0) {
-                throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoRequestDto.quantity}`);
-            }
-    
-            if (produtoRequestDto.cost <= 0) {
-                throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoRequestDto.cost}`);
-            }
-            return this.produtoService.create(produtoRequestDto);
+        create(@Body() request: ProdutoRequestDto): Promise<ProdutoResponseDto>  {
+            return this.service.create(request);
         }
 
         @Put(':id')
@@ -94,8 +87,8 @@ export class ProdutoController {
         @ApiInternalServerErrorResponse({
             description: 'Erro inesperado'
         })
-        update(@Body() produtoequestDto: ProdutoRequestDto, @Param('id') id: number) {
-            return this.produtoService.updateProduto(produtoequestDto, id);
+        update(@Param('id') id: number, @Body() request: ProdutoRequestDto): Promise<ProdutoResponseDto>  {
+            return this.service.update(id, request);
         }
 
         @Delete(':id')
@@ -114,6 +107,6 @@ export class ProdutoController {
             description: 'Erro inesperado'
         })
         destroy(@Param('id') id: number): Promise<void> {
-            return this.produtoService.deleteProduto(id);
+            return this.service.destroy(id);
         }
 }

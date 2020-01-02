@@ -1,13 +1,10 @@
-import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Produto } from './produto.entity';
 import { ProdutoResponseDto } from './produto.response.dto'
 import { ProdutoRequestDto } from './produto.request.dto';
 import { CategoriaService } from 'src/categoria/categoria.service';
-import { CategoriaResponseDto } from 'src/categoria/categoria.response.dto';
-import { Categoria } from 'src/categoria/categoria.entity';
-
 
 @Injectable()
 export class ProdutoService {
@@ -18,31 +15,36 @@ export class ProdutoService {
     ) { }
 
     async findAll(): Promise<ProdutoResponseDto[]> {
-        const produtoResponse = await this.produtoRepository.find({
+        const produtos = await this.produtoRepository.find({
             where: [{ "isActive": true }]
         });
         
+        if (!produtos || produtos.length == 0) {
+            throw new NotFoundException("Produtos não encontrados!");
+        }
+
         let response: Array<ProdutoResponseDto> = [];
 
-        for (var x in produtoResponse) {
-            let produtoResponseDto: ProdutoResponseDto;
-            let categoriaDTO = await this.categoriaService.getById(produtoResponse[x].idCategoria);
-            produtoResponseDto = new ProdutoResponseDto;
-            produtoResponseDto.description = produtoResponse[x].descricao;
-            produtoResponseDto.quantity = produtoResponse[x].quantidade;
-            produtoResponseDto.cost = produtoResponse[x].valor;
-            produtoResponseDto.category = categoriaDTO;
-            produtoResponseDto.id = produtoResponse[x].id;
-            response.push(produtoResponseDto);
+        for (var x in produtos) {
+            const categoria = await this.categoriaService.getById(produtos[x].idCategoria);
 
+            const produto = new ProdutoResponseDto;
+
+            produto.id = produtos[x].id;
+            produto.descricao = produtos[x].descricao;
+            produto.quantidade = produtos[x].quantidade;
+            produto.valor = produtos[x].valor;
+            produto.categoria = categoria;
+            produto.isActive = produtos[x].isActive;
+
+            response.push(produto);
         }      
         
         return response;
     }
 
-    async getProduto(id: number): Promise<ProdutoResponseDto> {
+    async getById(id: number): Promise<ProdutoResponseDto> {
         let produto = null;
-        let produtoDto = new  ProdutoResponseDto();
         
         try {
             produto = await this.produtoRepository.findOne({
@@ -52,103 +54,110 @@ export class ProdutoService {
             throw new InternalServerErrorException('Erro ao buscar dados do Produto');
         }
         
-        if ( produto ) {
-            let categoriaDTO = new CategoriaResponseDto();
-            categoriaDTO = await this.categoriaService.getById(produto.idCategoria);
-            produtoDto.description = produto.descricao;
-            produtoDto.quantity = produto.quantidade;
-            produtoDto.cost = produto.valor;
-            produtoDto.category = categoriaDTO;
-            produtoDto.id = produto.id;
+        if (!produto || !produto.isActive) {
+            throw new NotFoundException("Produto não encontrado!");
         }
-        
-        return produtoDto;
+
+        const categoria = await this.categoriaService.getById(produto.idCategoria);
+
+        const response = new ProdutoResponseDto();
+
+        response.id = produto.id;
+        response.descricao = produto.descricao;
+        response.quantidade = produto.quantidade;
+        response.valor = produto.valor;
+        response.categoria = categoria;
+        response.isActive = produto.isActive;
+
+        return response;
     }
 
-    async create(produtoDto: ProdutoRequestDto) : Promise<Produto>{
-        
-        if (!produtoDto) {
-            throw new BadRequestException('Dados nulos para cadastrar novo Produto.');
+    async create(request: ProdutoRequestDto) : Promise<ProdutoResponseDto>{
+        if (!request) {
+            throw new BadRequestException('Dados nulos.');
+        }
+
+        if (request.quantidade < 0) {
+            throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${request.quantidade}`);
+        }
+
+        if (request.valor <= 0) {
+            throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${request.valor}`);
         }
        
-        if (produtoDto.id > 0 ) {
-            let produtoResponse = await this.getProduto(produtoDto.id);
-            if (produtoResponse) {
-                throw new BadRequestException(`Já existe informações para o Id informado. Id: ${produtoDto.id}.`);
-            }
-        }
-       
-        let produto = new Produto();
-        produto.descricao = produtoDto.description;
-        produto.idCategoria = produtoDto.category;
-        produto.quantidade = produtoDto.quantity
-        produto.valor = produtoDto.cost;
-        produto.id = produtoDto.id;
+        // Validar se a categoria existe
+        await this.categoriaService.getById(request.idCategoria);
+
+        const produto = new Produto();
+
+        produto.descricao = request.descricao;
+        produto.idCategoria = request.idCategoria;
+        produto.quantidade = request.quantidade;
+        produto.valor = request.valor;
         
         try {
-            return await this.produtoRepository.save(produto);
+            await this.produtoRepository.save(produto);
+            return await this.getById(produto.id);
         } catch (error) {
             throw new InternalServerErrorException(`Erro ao gravar produto. ${error}`);
         }
     }
 
-    async updateProduto(produtoDto: ProdutoRequestDto, id: number) : Promise<Produto> {
-        if (!produtoDto) {
-            throw new BadRequestException('Dados nulos para atualizar produto.');
+    async update(id: number, request: ProdutoRequestDto) : Promise<ProdutoResponseDto> {
+        if (!request) {
+            throw new BadRequestException('Dados nulos.');
         }
 
-        if (produtoDto.quantity < 0) {
-            throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${produtoDto.quantity}`);
+        if (request.quantidade < 0) {
+            throw new BadRequestException(`Quantidade não pode ser negativa. Quantidade: ${request.quantidade}`);
         }
 
-        if (produtoDto.cost <= 0) {
-            throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${produtoDto.cost}`);
+        if (request.valor <= 0) {
+            throw new BadRequestException(`Valor do produto precisa ser maior que zero. Valor: ${request.valor}`);
         }
 
-        let produtoResponse = await this.produtoRepository.findOne(id);
+        // Validar se a categoria existe
+        await this.categoriaService.getById(request.idCategoria);
 
-        if (!produtoResponse) {
-            throw new BadRequestException(`Produto não encontrado para o Id ${produtoDto.id}.`);
+        const produto = await this.produtoRepository.findOne(id);
+
+        if (!produto) {
+            throw new NotFoundException(`Produto não encontrado para o Id ${id}.`);
         }
 
-        let produto = new Produto();
-        produtoResponse.descricao = produtoDto.description;
-        produtoResponse.idCategoria = produtoDto.category;
-        produtoResponse.quantidade = produtoDto.quantity
-        produtoResponse.valor = produtoDto.cost;
+        produto.descricao = request.descricao;
+        produto.idCategoria = request.idCategoria;
+        produto.quantidade = request.quantidade
+        produto.valor = request.valor;
         
         try {
-            return await this.produtoRepository.save(produtoResponse);
+            await this.produtoRepository.save(produto);
+            return await this.getById(produto.id);
         } catch (error) {
             throw new InternalServerErrorException(`Erro ao atualizar produto. ${error}`);
         }
     }
 
-    async deleteProduto(id: number) {
+    async destroy(id: number): Promise<void> {
 
         if (!id) {
             throw new BadRequestException('Id nulo para Produto.');
         }
 
-        let produtoResponse = await this.getProduto(id);
-
-        if (!produtoResponse) {
-            throw new BadRequestException(`Informções não encontradas para o Produt: Id ${id}.`);
-        }
+        let produtoResponse = await this.getById(id);
 
         let produto = new Produto();
-        produto.descricao = produtoResponse.description;
-        produto.quantidade = produtoResponse.quantity;
-        produto.valor = produtoResponse.cost;
+        produto.descricao = produtoResponse.descricao;
+        produto.quantidade = produtoResponse.quantidade;
+        produto.valor = produtoResponse.valor;
         produto.id = produtoResponse.id;
         produto.isActive = false;
                 
         try {
-            this.produtoRepository.save(produto);
+            await this.produtoRepository.save(produto);
         } catch (error) {
             throw new InternalServerErrorException('Erro ao inativar produto');
         }
-
     }
 
 }

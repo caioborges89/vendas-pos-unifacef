@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode, Res, HttpException, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode, UseInterceptors } from '@nestjs/common';
 import { CategoriaService } from './categoria.service';
 import { CategoriaResponseDto } from './categoria.response.dto';
 import { ApiTags, ApiNoContentResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiCreatedResponse, ApiOkResponse, ApiBearerAuth } from '@nestjs/swagger';
