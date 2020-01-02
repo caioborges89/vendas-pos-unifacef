@@ -9,6 +9,7 @@ import { Cliente } from './cliente/cliente.entity';
 import { Pedido } from './pedido/pedido.entity';
 import { ItemPedido } from './pedido/item-pedido.entity';
 import { Produto } from './produto/produto.entity';
+import { AuthenticationModule } from './auth/authentication.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -21,6 +22,6 @@ import { Produto } from './produto/produto.entity';
     entities: [Categoria, Cliente, Pedido, ItemPedido, Produto],
     synchronize: true,
   }),
-    ClienteModule, CategoriaModule, ProdutoModule, PedidoModule]
+    ClienteModule, CategoriaModule, ProdutoModule, PedidoModule, AuthenticationModule]
 })
 export class AppModule { }

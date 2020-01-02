@@ -8,7 +8,7 @@ import { ClienteRequestDTO } from './cliente.request.dto';
 export class ClienteService {
     constructor(
         @InjectRepository(Cliente)
-        private readonly clienteRepository: Repository<Cliente>,
+        private readonly clienteRepository: Repository<Cliente>
     ) { }
 
     async findAll(): Promise<Cliente[]>{
@@ -30,8 +30,15 @@ export class ClienteService {
         });
         
         if(cliente)
-            throw new BadRequestException('CpfCnpj já cadastrado para este Cliente/Usuario.');
+            throw new BadRequestException('CpfCnpj incluso em outro cadastro de Cliente/Usuario.');
 
+        cliente = await this.clienteRepository.findOne({
+            where: [{"email":clienteDTO.email}]
+        });
+
+        if(cliente)
+            throw new BadRequestException('E-Mail incluso em outro cadastro de Cliente/Usuario.');
+       
         try {
             cliente = new Cliente();
             cliente.nome = clienteDTO.nome;
@@ -56,6 +63,15 @@ export class ClienteService {
         if(cliente) {
             if(cliente.id != id)
                 throw new BadRequestException('CpfCnpj incluso em outro cadastro de Cliente/Usuario.');
+            else if(cliente.email != clienteDTO.email){
+                cliente = await this.clienteRepository.findOne({
+                    where: [{"email":clienteDTO.email}]
+                });
+                if(cliente)
+                    throw new BadRequestException('E-Mail incluso em outro cadastro de Cliente/Usuario.');
+                else 
+                    cliente = await this.clienteRepository.findOne(id);
+            }
         } else 
             cliente = await this.clienteRepository.findOne(id);
 

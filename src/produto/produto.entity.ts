@@ -18,6 +18,9 @@ export class Produto {
 
     @Column()
     idCategoria: number;
+
+    @Column({ default: true })
+    isActive: boolean;
     
     @OneToMany(type => ItemPedido, item => item.produto)
     pedidos: ItemPedido[];

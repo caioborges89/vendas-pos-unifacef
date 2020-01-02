@@ -1,0 +1,31 @@
+import { Controller, HttpStatus, Post, HttpCode, Body } from "@nestjs/common";
+import { ApiTags, ApiCreatedResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse } from "@nestjs/swagger";
+import { AuthenticationService } from "./authentication.service";
+import { AuthenticationRequestDTO } from "./authentication.request.dto";
+
+@ApiTags('Authentication')
+@Controller('auth')
+export class AuthenticationController {
+    constructor(
+        private readonly authenticationService: AuthenticationService
+    ){}
+
+    @Post('/login')
+    @HttpCode(HttpStatus.OK)
+    @ApiCreatedResponse({
+        description: 'Login',
+        isArray:false
+    })
+    @ApiNotFoundResponse({
+        description: 'Não encontrado'
+    })
+    @ApiBadRequestResponse({
+        description: 'Requisição inválida'
+    })
+    @ApiInternalServerErrorResponse({
+        description: 'Erro inesperado'
+    })
+    login(@Body() authenticationRequestDTO:AuthenticationRequestDTO) {
+        return this.authenticationService.login(authenticationRequestDTO);
+    }
+}

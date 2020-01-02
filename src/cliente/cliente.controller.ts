@@ -1,8 +1,9 @@
-import { Controller, Get, Param, Query, Post, Body, Put, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Param, Query, Post, Body, Put, Delete, HttpCode, HttpStatus, UseInterceptors } from '@nestjs/common';
 import { ClienteService } from './cliente.service';
 import { ApiResponse, ApiTags, ApiOkResponse, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse, ApiCreatedResponse, ApiNoContentResponse } from '@nestjs/swagger';
 import { Cliente } from './cliente.entity';
 import { ClienteRequestDTO } from './cliente.request.dto';
+import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
 
 @ApiTags('Cliente')
 @Controller('cliente')
@@ -11,6 +12,7 @@ export class ClienteController {
         private readonly clienteService: ClienteService
     ) {}
 
+    @UseInterceptors(AuthenticationInterceptor)
     @Get()
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({
@@ -28,6 +30,7 @@ export class ClienteController {
         return this.clienteService.findAll();
     }
 
+    @UseInterceptors(AuthenticationInterceptor)
     @Get(':id')
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({
@@ -68,6 +71,7 @@ export class ClienteController {
         return this.clienteService.create(clienteDTO);
     }
 
+    @UseInterceptors(AuthenticationInterceptor)
     @Put(':id')
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({
@@ -87,7 +91,7 @@ export class ClienteController {
     update(@Param('id') id: number, @Body() clienteDTO:ClienteRequestDTO):Promise<Cliente> {
         return this.clienteService.update(id,clienteDTO);
     }
-
+    @UseInterceptors(AuthenticationInterceptor)
     @Delete(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
     @ApiNoContentResponse({
