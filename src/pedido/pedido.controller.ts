@@ -11,7 +11,7 @@ export class PedidoController {
     @Get()
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({
-        description: 'Listar pedidos',
+        description: 'Lista de pedidos',
         type: PedidoResponseDto,
         isArray: true
     })
@@ -28,7 +28,7 @@ export class PedidoController {
     @Get(':id')
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({
-        description: 'Buscar pedido por ID',
+        description: 'Detalhes do pedido',
         type: PedidoResponseDto,
         isArray: false
     })
@@ -48,7 +48,7 @@ export class PedidoController {
     @Post()
     @HttpCode(HttpStatus.CREATED)
     @ApiCreatedResponse({
-        description: 'Adicionar pedido',
+        description: 'Pedido adicionado',
         type: PedidoResponseDto,
         isArray: false
     })
@@ -68,7 +68,7 @@ export class PedidoController {
     @Put(':id')
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({
-        description: 'Atualizar pedido',
+        description: 'Pedido atualizado',
         type: PedidoResponseDto,
         isArray: false
     })
@@ -88,7 +88,7 @@ export class PedidoController {
     @Delete(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
     @ApiNoContentResponse({
-        description: 'Deletar pedido',
+        description: 'Pedido excluído',
         isArray: false
     })
     @ApiNotFoundResponse({
