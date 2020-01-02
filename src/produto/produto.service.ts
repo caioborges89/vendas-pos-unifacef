@@ -65,17 +65,18 @@ export class ProdutoService {
     }
 
     async create(produtoDto: ProdutoRequestDto) {
-
+        
         if (!produtoDto) {
             throw new BadRequestException('Dados nulos para cadastrar novo Produto.');
         }
        
-        let produtoResponse = await this.getProduto(produtoDto.id);
-        console.log(produtoResponse);
-        if (produtoResponse) {
-            console.log("entrou no if");
-            throw new BadRequestException(`Já existe informações para o Id informado. Id: ${produtoDto.id}.`);
+        if (produtoDto.id > 0 ){
+            let produtoResponse = await this.getProduto(produtoDto.id);
+            if (produtoResponse) {
+                throw new BadRequestException(`Já existe informações para o Id informado. Id: ${produtoDto.id}.`);
+            }
         }
+       
 
         let produto = new Produto();
         produto.descricao = produtoDto.description;
