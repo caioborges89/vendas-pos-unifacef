@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, HttpStatus, HttpCode, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Query, Post, Body, Param, Put, Delete, HttpStatus, HttpCode, UseInterceptors } from '@nestjs/common';
 import { ProdutoService } from './produto.service';
 import { ProdutoResponseDto } from './produto.response.dto';
-import { ProdutoRequestDto } from './produto.request.dto';
+import { ProdutoRequestDto, ProdutoQueryDto } from './produto.request.dto';
 import { ApiNoContentResponse, ApiOkResponse, ApiTags, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse, ApiCreatedResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
 
@@ -23,8 +23,8 @@ export class ProdutoController {
         @ApiInternalServerErrorResponse({
             description: 'Erro inesperado'
         })
-        findAll(): Promise<ProdutoResponseDto[]> {
-            return this.service.findAll();
+        findAll(@Query() query: ProdutoQueryDto): Promise<ProdutoResponseDto[]> {
+            return this.service.findAll(query);
         }
     
         @Get(':id')

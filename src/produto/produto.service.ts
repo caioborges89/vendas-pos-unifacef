@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Produto } from './produto.entity';
 import { ProdutoResponseDto } from './produto.response.dto'
-import { ProdutoRequestDto } from './produto.request.dto';
+import { ProdutoRequestDto, ProdutoQueryDto } from './produto.request.dto';
 import { CategoriaService } from 'src/categoria/categoria.service';
 
 @Injectable()
@@ -14,9 +14,9 @@ export class ProdutoService {
         private readonly categoriaService: CategoriaService
     ) { }
 
-    async findAll(): Promise<ProdutoResponseDto[]> {
+    async findAll(query: ProdutoQueryDto): Promise<ProdutoResponseDto[]> {
         const produtos = await this.produtoRepository.find({
-            where: [{ "isActive": true }]
+            where: [{ "isActive": true, ...query }]
         });
         
         if (!produtos || produtos.length == 0) {
