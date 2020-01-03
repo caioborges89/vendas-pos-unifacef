@@ -3,14 +3,10 @@ import { ProdutoService } from './produto.service';
 import { ProdutoResponseDto } from './produto.response.dto';
 import { ProdutoRequestDto } from './produto.request.dto';
 import { ApiNoContentResponse, ApiOkResponse, ApiTags, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiBadRequestResponse, ApiCreatedResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { BadRequestException } from '@nestjs/common';
 import { AuthenticationInterceptor } from 'src/auth/authentication.interceptor';
-import { Produto } from './produto.entity';
 
 @ApiTags('Produto')
 @Controller('produto')
-@UseInterceptors(AuthenticationInterceptor)
-@ApiBearerAuth()
 export class ProdutoController {
         constructor(private readonly service: ProdutoService) { }
     
@@ -51,6 +47,8 @@ export class ProdutoController {
             return this.service.getById(id);        
         }
 
+        @ApiBearerAuth()
+        @UseInterceptors(AuthenticationInterceptor)
         @Post()
         @HttpCode(HttpStatus.CREATED)
         @ApiCreatedResponse({
@@ -71,6 +69,8 @@ export class ProdutoController {
             return this.service.create(request);
         }
 
+        @ApiBearerAuth()
+        @UseInterceptors(AuthenticationInterceptor)
         @Put(':id')
         @HttpCode(HttpStatus.OK)
         @ApiOkResponse({
@@ -91,6 +91,8 @@ export class ProdutoController {
             return this.service.update(id, request);
         }
 
+        @ApiBearerAuth()
+        @UseInterceptors(AuthenticationInterceptor)
         @Delete(':id')
         @HttpCode(HttpStatus.NO_CONTENT)
         @ApiNoContentResponse({
